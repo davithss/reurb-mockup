@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>REURB Sergipe — Cadastro Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+    --primary: #0e49a1;
+    --primary-dark: #093279;
+    --primary-soft: #edf2fd;
+    --green: #059669;
+    --green-soft: #e0f6ed;
+    --amber: #d98510;
+    --amber-soft: #fef2d5;
+    --red: #dc2626;
+    --red-soft: #fde8e8;
+    --purple: #7c3aed;
+    --purple-soft: #f1eefd;
+    --sidebar: #0f172a;
+    --sidebar-item: #26334a;
+    --sidebar-text: #bbc4d4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--sidebar); color: #fff; padding: 24px 16px; }
+  .brand { display: flex; gap: 10px; align-items: center; padding-bottom: 24px; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-text); }
+  .nav-section { margin-top: 16px; padding-left: 8px; }
+  .nav-section-title { font-size: 10px; font-weight: 600; color: var(--subtle);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+  .nav-item {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    color: var(--sidebar-text); cursor: pointer; user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item .kbd {
+    background: var(--sidebar-item); padding: 3px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 600;
+  }
+  .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+  .nav-item.active .kbd { background: rgba(255,255,255,0.2); color: #fff; }
+  .nav-label { font-size: 13px; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px 12px 32px;
+    display: flex; gap: 16px; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .breadcrumb { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .breadcrumb .sep { color: var(--subtle); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .search {
+    width: 340px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0 12px; display: flex; gap: 8px; align-items: center;
+    color: var(--subtle); font-size: 12px;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .avatar {
+    height: 38px; padding: 0 12px 0 6px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 500;
+  }
+  .avatar-dot { width: 26px; height: 26px; border-radius: 999px; background: var(--primary); }
+
+  /* CONTENT */
+  .content { padding: 24px 32px 48px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* HEADER */
+  .page-header { display: flex; gap: 16px; align-items: center; }
+  .page-title-row { display: flex; gap: 10px; align-items: center; }
+  .page-title { font-size: 22px; font-weight: 600; margin: 0; }
+  .page-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .page-header .spacer { flex: 1; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    background: var(--surface); color: var(--text); border-color: var(--border);
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline-primary { background: var(--surface); color: var(--primary); border-color: var(--primary); }
+  .btn-outline-danger { background: var(--surface); color: var(--red); border-color: var(--red); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-xs { padding: 4px 8px; font-size: 11px; }
+
+  /* PILLS */
+  .pill {
+    display: inline-flex; gap: 6px; align-items: center; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; line-height: 1;
+  }
+  .pill-green { background: var(--green-soft); color: var(--green); }
+  .pill-amber { background: var(--amber-soft); color: var(--amber); }
+  .pill-red { background: var(--red-soft); color: var(--red); }
+  .pill-primary { background: var(--primary-soft); color: var(--primary); }
+  .pill-muted { background: var(--bg); color: var(--muted); }
+  .pill-white { background: #fff; color: var(--primary); }
+
+  /* STEPPER */
+  .stepper {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; display: flex; gap: 4px; align-items: center; overflow-x: auto;
+  }
+  .step { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .step .circle {
+    width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; background: var(--bg); border: 1px solid var(--border-strong); color: var(--muted);
+  }
+  .step.done .circle { background: var(--green); border-color: var(--green); color: #fff; }
+  .step.current .circle { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .step .label { font-size: 12px; color: var(--muted); }
+  .step.current .label { color: var(--text); font-weight: 600; }
+  .step.done .label { color: var(--text); }
+  .step-sep { width: 22px; height: 2px; background: var(--border); flex-shrink: 0; }
+  .step-sep.done { background: var(--green); }
+  .stepper .spacer { flex: 1; min-width: 16px; }
+
+  /* LAYOUT GRID */
+  .grid { display: grid; grid-template-columns: 1fr 330px; gap: 20px; align-items: start; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+  .card-head { display: flex; gap: 10px; align-items: center; }
+  .card-head .spacer { flex: 1; }
+  .card-head .hint { font-size: 11px; color: var(--muted); }
+  .col-stack { display: flex; flex-direction: column; gap: 20px; }
+
+  /* FIELDS */
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  .field label .req { color: var(--red); font-weight: 700; }
+  .field label .hint { font-size: 10px; color: var(--subtle); font-weight: 400; }
+  .input, select {
+    appearance: none; -webkit-appearance: none;
+    height: 40px; padding: 0 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--text); font-family: inherit; width: 100%;
+  }
+  .input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+  .input::placeholder { color: var(--subtle); }
+  select { background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2364748b' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 10px; padding-right: 32px; }
+  textarea.input { height: auto; padding: 10px 12px; resize: vertical; min-height: 70px; }
+  .row { display: grid; gap: 16px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .row-2-1 { grid-template-columns: 2fr 1fr; }
+  .row-tit { grid-template-columns: 2fr 170px 130px 1fr; }
+  .row-cep { grid-template-columns: 140px 1fr 110px 1fr; }
+  .row-end-3 { grid-template-columns: 110px 1fr 1fr 1fr; }
+
+  /* RADIO TILES */
+  .radio-row { display: grid; gap: 10px; grid-template-columns: repeat(5, 1fr); }
+  .radio-tile {
+    display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border); cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 500;
+  }
+  .radio-tile .dot { width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid var(--border-strong); background: #fff; flex-shrink: 0; }
+  .radio-tile.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+  .radio-tile.selected .dot { background: var(--primary); border-color: var(--primary); box-shadow: inset 0 0 0 3px #fff; }
+
+  .check-row { display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); }
+  .check-tile {
+    display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border); cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 500;
+  }
+  .check-tile .box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong); background: #fff; flex-shrink: 0; position: relative; }
+  .check-tile.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+  .check-tile.selected .box { background: var(--primary); border-color: var(--primary); }
+  .check-tile.selected .box::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+  /* TOGGLE */
+  .toggle { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+  .toggle-sw { width: 36px; height: 20px; border-radius: 999px; background: var(--green); position: relative; cursor: pointer; }
+  .toggle-sw::after { content: ""; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 999px; background: #fff; }
+  .toggle-sw.off { background: var(--border-strong); }
+  .toggle-sw.off::after { left: 2px; right: auto; }
+
+  /* TABLE */
+  table.family { width: 100%; border-collapse: collapse; }
+  table.family thead th {
+    background: var(--bg); padding: 10px 14px; text-align: left; font-size: 11px;
+    color: var(--muted); font-weight: 600; border-radius: 0;
+  }
+  table.family thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.family thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.family tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  table.family tbody tr:last-child td { border-bottom: none; }
+  table.family tbody td.name { font-weight: 500; }
+  table.family tbody td.muted { color: var(--muted); }
+
+  /* DOC LIST */
+  .doc-cat-title { font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 8px; }
+  .doc-row {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px;
+    background: var(--bg); border-radius: 8px; margin-bottom: 6px;
+  }
+  .doc-ic {
+    width: 28px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .doc-ic.ok { background: var(--green); }
+  .doc-ic.pending { background: var(--amber); }
+  .doc-ic.action { background: var(--primary); }
+  .doc-ic.optional { background: #fff; color: var(--muted); border: 1px solid var(--border-strong); }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-name { font-size: 12px; font-weight: 600; }
+  .doc-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* TERMS — physical signature workflow */
+  .flow-banner {
+    background: var(--primary-soft); border-radius: 8px; padding: 12px 14px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 11px;
+  }
+  .flow-banner b { color: var(--primary); font-size: 12px; }
+  .flow-step { font-size: 11px; font-weight: 500; }
+  .flow-arrow { color: var(--muted); font-weight: 700; }
+
+  .term-card {
+    border-radius: 10px; border: 1px solid var(--border); padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .term-card.scanned { background: var(--green-soft); border-color: var(--green); }
+  .term-card.printed { background: var(--amber-soft); border-color: var(--amber); }
+  .term-card.ready { background: var(--primary-soft); border-color: var(--primary); }
+  .term-card.na { background: var(--bg); border-color: var(--border); opacity: 0.85; }
+  .term-head { display: flex; gap: 12px; align-items: center; }
+  .term-doc-ic {
+    width: 40px; height: 50px; border-radius: 6px; background: #fff; flex-shrink: 0;
+    border: 1.5px solid currentColor; padding: 14px 8px; display: flex; flex-direction: column; gap: 5px;
+  }
+  .term-doc-ic .line { height: 2px; background: currentColor; border-radius: 1px; }
+  .term-doc-ic .line:nth-child(3) { width: 60%; }
+  .term-card.scanned .term-doc-ic { color: var(--green); }
+  .term-card.printed .term-doc-ic { color: var(--amber); }
+  .term-card.ready .term-doc-ic { color: var(--primary); }
+  .term-card.na .term-doc-ic { color: var(--muted); }
+  .term-title { font-size: 14px; font-weight: 600; }
+  .term-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .term-fields { background: #fff; border-radius: 6px; padding: 8px 10px; font-size: 11px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .term-fields b { color: var(--muted); font-weight: 600; }
+  .term-file { display: flex; gap: 10px; align-items: center; }
+  .term-file-info { flex: 1; min-width: 0; }
+  .term-file-name { font-size: 12px; font-weight: 500; }
+  .term-file-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .term-witnesses { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .term-witnesses-label { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .term-wrow { display: grid; gap: 10px; grid-template-columns: 2fr 1fr 1.2fr; }
+
+  /* CONDITIONAL BOX */
+  .conditional-box {
+    background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 8px;
+    padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .conditional-head { display: flex; gap: 8px; align-items: center; font-size: 12px; font-weight: 600; color: var(--primary); }
+  .conditional-body { font-size: 12px; color: var(--text); }
+
+  .note {
+    border-radius: 8px; padding: 12px 14px; display: flex; gap: 10px; align-items: center;
+  }
+  .note.amber { background: var(--amber-soft); }
+  .note.purple { background: var(--purple-soft); }
+  .note.muted { background: var(--bg); border: 1px dashed var(--border-strong); }
+  .note-ic {
+    width: 28px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .note.amber .note-ic { background: var(--amber); }
+  .note.purple .note-ic { background: var(--purple); }
+  .note.muted .note-ic { background: var(--purple-soft); color: var(--purple); }
+  .note-text { flex: 1; }
+  .note-title { font-size: 12px; font-weight: 600; }
+  .note-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* RIGHT COLUMN */
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .status-row .name { flex: 1; }
+
+  .map-mini {
+    width: 100%; height: 160px; border-radius: 8px;
+    background: linear-gradient(135deg, #dceddc 0%, #c8dceb 100%); position: relative; overflow: hidden;
+  }
+  .map-mini::before, .map-mini::after, .map-mini .road3 {
+    content: ""; position: absolute; height: 2px; left: 0; right: 0; background: #fff; opacity: 0.65;
+  }
+  .map-mini::before { top: 40px; }
+  .map-mini::after { top: 85px; }
+  .map-mini .road3 { top: 130px; }
+  .map-mini .pin {
+    position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 18px; height: 18px;
+    border-radius: 999px; background: var(--red); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .coord-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 8px; }
+  .coord-val { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 4px; }
+  .photo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
+  .photo {
+    aspect-ratio: 4/3; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    display: flex; align-items: flex-end; padding: 6px 8px; font-size: 9px; color: var(--subtle); font-weight: 500;
+    position: relative;
+  }
+  .photo::before { content: "🖼"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -80%); font-size: 18px; opacity: 0.4; }
+
+  .cross-row { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; }
+  .cross-ic {
+    width: 16px; height: 16px; border-radius: 999px; background: var(--green); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .cross-name { font-size: 12px; font-weight: 500; }
+  .cross-sub { font-size: 11px; color: var(--muted); }
+
+  .audit-row { display: flex; gap: 10px; padding: 6px 0; }
+  .audit-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--primary); margin-top: 8px; flex-shrink: 0; }
+  .audit-action { font-size: 12px; font-weight: 500; }
+  .audit-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* RESPONSIVE-ish */
+  @media (max-width: 1180px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">SE</div>
+      <div>
+        <div class="brand-title">REURB Sergipe</div>
+        <div class="brand-sub">Programa Casa Legal · SEAD</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Operacional</div>
+      <div class="nav-item"><span class="nav-label">Mobilização Social</span></div>
+      <div class="nav-item active"><span class="nav-label">Cadastro Social</span></div>
+      <div class="nav-item"><span class="nav-label">Cadastro Técnico</span></div>
+      <div class="nav-item"><span class="nav-label">Vínculo Lote ↔ Família</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Processos</div>
+      <div class="nav-item"><span class="nav-label">Workflow PRF → CRF</span></div>
+      <div class="nav-item"><span class="nav-label">Pós-Titulação</span></div>
+      <div class="nav-item"><span class="nav-label">Mapa Interativo</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Gestão</div>
+      <div class="nav-item"><span class="nav-label">Indicadores &amp; IMR</span></div>
+      <div class="nav-item"><span class="nav-label">Transparência</span></div>
+      <div class="nav-item"><span class="nav-label">Auditoria</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Operacional</span><span class="sep">›</span><span class="current">Cadastro Social — Família &amp; Beneficiários</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">🔍 Buscar família, CPF, lote ou núcleo...</div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar"><span class="avatar-dot"></span>Ana M. · Agente</div>
+    </div>
+
+    <div class="content">
+
+      <!-- HEADER -->
+      <header class="page-header">
+        <div>
+          <div class="page-title-row">
+            <h1 class="page-title">Cadastro Social — Família &amp; Beneficiários</h1>
+            <span class="pill pill-green">REURB-S</span>
+          </div>
+          <div class="page-sub">Núcleo Bom Jardim · Ficha #SE-2026-00482 · Programa Casa Legal · Aberto há 3 dias</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn">Salvar rascunho</button>
+        <button class="btn btn-outline-primary">📄  Gerar termos para assinatura</button>
+        <button class="btn btn-primary">Enviar para 2ª validação</button>
+      </header>
+
+      <!-- STEPPER -->
+      <div class="stepper">
+        <div class="step done"><div class="circle">✓</div><div class="label">Núcleo &amp; Lote</div></div>
+        <div class="step-sep done"></div>
+        <div class="step done"><div class="circle">✓</div><div class="label">Titular &amp; Cônjuge</div></div>
+        <div class="step-sep done"></div>
+        <div class="step done"><div class="circle">✓</div><div class="label">Família</div></div>
+        <div class="step-sep"></div>
+        <div class="step current"><div class="circle">4</div><div class="label">Renda</div></div>
+        <div class="step-sep"></div>
+        <div class="step"><div class="circle">5</div><div class="label">Endereço &amp; Imóvel</div></div>
+        <div class="step-sep"></div>
+        <div class="step"><div class="circle">6</div><div class="label">Documentos</div></div>
+        <div class="step-sep"></div>
+        <div class="step"><div class="circle">7</div><div class="label">Termos assinados</div></div>
+        <div class="step-sep"></div>
+        <div class="step"><div class="circle">8</div><div class="label">Geo &amp; Evidências</div></div>
+        <div class="step-sep"></div>
+        <div class="step"><div class="circle">9</div><div class="label">Validação</div></div>
+        <div class="spacer"></div>
+        <span class="pill pill-amber">Em preenchimento — etapa 4/9</span>
+      </div>
+
+      <div class="grid">
+
+        <!-- LEFT -->
+        <div class="col-stack">
+
+          <!-- 1. NÚCLEO & LOTE -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">1. Núcleo &amp; Lote</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-primary">Vinculado ao lote 14-04</span>
+            </div>
+            <div class="row" style="grid-template-columns: 2fr 1fr 1fr;">
+              <div class="field">
+                <label>Núcleo (região cadastrada) <span class="req">*</span></label>
+                <select><option>Núcleo Bom Jardim — Boquim/SE</option></select>
+              </div>
+              <div class="field">
+                <label>Quadra <span class="req">*</span></label>
+                <select><option>14</option></select>
+              </div>
+              <div class="field">
+                <label>Lote <span class="req">*</span></label>
+                <select><option>04</option></select>
+              </div>
+            </div>
+            <div class="row row-2">
+              <div class="field">
+                <label>Classificação REURB <span class="hint">· S = gratuito · E = ocupante custeia (Lei 13.465/2017)</span></label>
+                <select><option>REURB-S (interesse social)</option><option>REURB-E (interesse específico)</option></select>
+              </div>
+              <div class="field">
+                <label>Conjunto habitacional <span class="req">*</span></label>
+                <input class="input" value="Bom Jardim I" />
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. TITULAR -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">2. Titular do cadastro</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-muted">RG + CPF obrigatórios</span>
+            </div>
+            <div class="row" style="grid-template-columns: 2fr 1fr 1fr;">
+              <div class="field"><label>Nome completo <span class="req">*</span></label><input class="input" value="Maria das Graças Souza Lima" /></div>
+              <div class="field"><label>Nacionalidade</label><select><option>Brasileira</option></select></div>
+              <div class="field"><label>Sexo</label><select><option>Feminino</option><option>Masculino</option></select></div>
+            </div>
+            <div class="row" style="grid-template-columns: 1fr 1fr 0.8fr 1fr 0.8fr;">
+              <div class="field"><label>CPF <span class="req">*</span> <span class="hint">· valida CadÚnico</span></label><input class="input" value="048.712.339-22" /></div>
+              <div class="field"><label>RG <span class="req">*</span></label><input class="input" value="1.832.991" /></div>
+              <div class="field"><label>Órgão emissor</label><select><option>SSP/SE</option></select></div>
+              <div class="field"><label>Data nasc. <span class="req">*</span></label><input class="input" value="14/03/1981" /></div>
+              <div class="field"><label>Naturalidade</label><input class="input" value="Boquim/SE" /></div>
+            </div>
+            <div class="row row-3">
+              <div class="field"><label>Profissão <span class="req">*</span> <span class="hint">· entra na Decl. de Renda Informal</span></label><input class="input" value="Costureira autônoma" /></div>
+              <div class="field"><label>Telefone (WhatsApp) <span class="req">*</span></label><input class="input" value="(79) 99812-4471" /></div>
+              <div class="field"><label>E-mail (opcional)</label><input class="input" value="mariagracas81@gmail.com" /></div>
+            </div>
+
+            <div class="field">
+              <label>Estado civil (define documentos do check-list)</label>
+              <div class="radio-row">
+                <div class="radio-tile"><span class="dot"></span>Solteiro(a)</div>
+                <div class="radio-tile"><span class="dot"></span>Casado(a)</div>
+                <div class="radio-tile"><span class="dot"></span>Viúvo(a)</div>
+                <div class="radio-tile"><span class="dot"></span>Divorciado(a)</div>
+                <div class="radio-tile selected"><span class="dot"></span>União estável</div>
+              </div>
+            </div>
+
+            <div class="conditional-box">
+              <div class="conditional-head">📌 Documento exigido pelo check-list para <span class="pill pill-white">União estável</span></div>
+              <div class="conditional-body">• <b>Certidão de união estável</b> emitida em cartório &nbsp;<b>OU</b>&nbsp; <b>Declaração de União Estável</b> (preenchida in loco, fé pública do servidor)</div>
+            </div>
+          </section>
+
+          <!-- 3. CÔNJUGE -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">3. Cônjuge / companheiro(a)</h2>
+              <div class="spacer"></div>
+              <div class="toggle">Possui cônjuge?<div class="toggle-sw"></div><b style="color:var(--green)">Sim</b></div>
+            </div>
+            <div class="row" style="grid-template-columns: 2fr 1fr 1fr;">
+              <div class="field"><label>Nome completo <span class="req">*</span></label><input class="input" value="Joaquim Pereira Lima" /></div>
+              <div class="field"><label>CPF <span class="req">*</span></label><input class="input" value="712.331.029-08" /></div>
+              <div class="field"><label>RG <span class="req">*</span></label><input class="input" value="2.114.882 SSP/SE" /></div>
+            </div>
+            <div class="row row-4">
+              <div class="field"><label>Data nascimento</label><input class="input" value="02/11/1977" /></div>
+              <div class="field"><label>Profissão</label><input class="input" value="Pedreiro" /></div>
+              <div class="field"><label>Telefone</label><input class="input" value="(79) 99544-1209" /></div>
+              <div class="field"><label>Sexo</label><select><option>Masculino</option></select></div>
+            </div>
+          </section>
+
+          <!-- 4. FAMÍLIA -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">4. Composição familiar</h2>
+              <div class="spacer"></div>
+              <span class="hint">RG ou Certidão de nasc. de cada membro</span>
+              <button class="btn btn-sm" style="background:var(--primary-soft); color:var(--primary); border-color:transparent;">+ Adicionar membro</button>
+            </div>
+            <table class="family">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">Nome</th>
+                  <th>Parentesco</th>
+                  <th>Idade</th>
+                  <th>CPF / Cert. nasc.</th>
+                  <th>Vulnerab. (BPC/PCD)</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="name">Joaquim Pereira Lima</td><td class="muted">Cônjuge</td><td class="muted">47</td><td class="muted">712.331.029-08</td><td class="muted">—</td><td style="text-align:right;"><button class="btn btn-xs">Editar</button></td></tr>
+                <tr><td class="name">Helena Souza Lima</td><td class="muted">Filha</td><td class="muted">8</td><td class="muted">Cert. nasc. anexa</td><td><span class="pill pill-amber">BPC (PCD)</span></td><td style="text-align:right;"><button class="btn btn-xs">Editar</button></td></tr>
+                <tr><td class="name">Davi Souza Lima</td><td class="muted">Filho</td><td class="muted">14</td><td class="muted">Cert. nasc. anexa</td><td class="muted">—</td><td style="text-align:right;"><button class="btn btn-xs">Editar</button></td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- 5. RENDA -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">5. Renda familiar</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-green">Total: R$ 1.840,00 / mês</span>
+            </div>
+
+            <div class="field">
+              <label>Tipo de comprovação (multi-seleção)</label>
+              <div class="check-row">
+                <div class="check-tile"><span class="box"></span>Formal (contracheque)</div>
+                <div class="check-tile"><span class="box"></span>Aposentadoria / INSS</div>
+                <div class="check-tile selected"><span class="box"></span>Informal (declaração)</div>
+                <div class="check-tile"><span class="box"></span>BPC / CadÚnico</div>
+              </div>
+            </div>
+
+            <div class="row row-3">
+              <div class="field"><label>Renda mensal bruta — titular (R$) <span class="req">*</span></label><input class="input" value="1.200,00" /></div>
+              <div class="field"><label>Renda mensal bruta — cônjuge (R$)</label><input class="input" value="640,00" /></div>
+              <div class="field"><label>Outros rendimentos (R$)</label><input class="input" value="0,00" /></div>
+            </div>
+
+            <div class="note amber">
+              <div class="note-ic">!</div>
+              <div class="note-text">
+                <div class="note-title">Renda informal declarada — gerar Declaração de Renda Informal</div>
+                <div class="note-sub">Preenchida in loco com fé pública do servidor. Exige 2 testemunhas com RG e CPF (Art. 299 do Código Penal).</div>
+              </div>
+              <button class="btn btn-sm" style="border-color: var(--amber); color: var(--amber);">Gerar PDF</button>
+            </div>
+          </section>
+
+          <!-- 6. ENDEREÇO -->
+          <section class="card">
+            <h2 class="card-title">6. Endereço &amp; imóvel</h2>
+            <div class="row row-cep">
+              <div class="field"><label>CEP <span class="req">*</span></label><input class="input" value="49960-000" /></div>
+              <div class="field"><label>Logradouro <span class="req">*</span></label><input class="input" value="Rua Mangueira do Carmo" /></div>
+              <div class="field"><label>Número <span class="req">*</span></label><input class="input" value="142" /></div>
+              <div class="field"><label>Complemento</label><input class="input" value="Casa térrea" /></div>
+            </div>
+            <div class="row row-4">
+              <div class="field"><label>Bairro</label><input class="input" value="Centro / Bom Jardim" /></div>
+              <div class="field"><label>Município <span class="req">*</span></label><select><option>Boquim</option></select></div>
+              <div class="field"><label>UF</label><select><option>SE</option></select></div>
+              <div class="field"><label>Ponto de referência</label><input class="input" value="Em frente ao mercadinho da Dona Zefa" /></div>
+            </div>
+            <div class="row row-end-3">
+              <div class="field"><label>Tempo de ocupação <span class="hint">· anos · entra no Termo de Posse</span></label><input class="input" value="11" /></div>
+              <div class="field"><label>Tipo de imóvel</label><select><option>Casa térrea (residencial)</option></select></div>
+              <div class="field"><label>Área construída (m²)</label><input class="input" value="68,40" /></div>
+              <div class="field"><label>Andar / pavimento <span class="hint">· 2º = outro beneficiário</span></label><select><option>Térreo</option><option>2º pavimento</option></select></div>
+            </div>
+
+            <div class="note purple">
+              <div class="note-ic">⌂</div>
+              <div class="note-text">
+                <div class="note-title">Outro beneficiário no andar superior?</div>
+                <div class="note-sub">Lote pode ter andares com beneficiários distintos. Vincular CPF do ocupante do 2º pavimento.</div>
+              </div>
+              <button class="btn btn-sm" style="border-color: var(--purple); color: var(--purple);">Vincular ocupante</button>
+            </div>
+          </section>
+
+          <!-- 7. CHECKLIST -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">7. Check-list documental (Programa Casa Legal)</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-amber">9 de 14 anexados</span>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Documentos pessoais</div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">RG do titular</div><div class="doc-meta">rg_maria.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">CPF do titular</div><div class="doc-meta">cpf_maria.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">RG do cônjuge</div><div class="doc-meta">rg_joaquim.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">CPF do cônjuge</div><div class="doc-meta">cpf_joaquim.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Membros da família</div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">Certidão de nasc. — Helena</div><div class="doc-meta">cert_helena.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+              <div class="doc-row"><div class="doc-ic pending">!</div><div class="doc-info"><div class="doc-name">Certidão de nasc. — Davi</div><div class="doc-meta">Pendente</div></div><button class="btn btn-sm">Anexar</button></div>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Comprovante de renda</div>
+              <div class="doc-row"><div class="doc-ic action">+</div><div class="doc-info"><div class="doc-name">Decl. de Renda Informal — titular</div><div class="doc-meta">Preenchido in loco — gerar PDF para impressão e assinatura</div></div><button class="btn btn-sm btn-primary">Gerar PDF</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">Comp. de renda — cônjuge</div><div class="doc-meta">contracheque_joaq.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">Consulta CadÚnico — Helena (BPC)</div><div class="doc-meta">cadunico_helena.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Comprovante de endereço</div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">Conta de água/energia (≤ 2 meses)</div><div class="doc-meta">luz_ago2025.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Estado civil</div>
+              <div class="doc-row"><div class="doc-ic action">+</div><div class="doc-info"><div class="doc-name">Decl. de União Estável (in loco)</div><div class="doc-meta">Preenchido in loco — gerar PDF para impressão e assinatura</div></div><button class="btn btn-sm btn-primary">Gerar PDF</button></div>
+            </div>
+
+            <div>
+              <div class="doc-cat-title">Documentos do imóvel</div>
+              <div class="doc-row"><div class="doc-ic action">+</div><div class="doc-info"><div class="doc-name">Termo de Posse (in loco)</div><div class="doc-meta">Preenchido in loco — gerar PDF para impressão e assinatura</div></div><button class="btn btn-sm btn-primary">Gerar PDF</button></div>
+              <div class="doc-row"><div class="doc-ic optional">○</div><div class="doc-info"><div class="doc-name">Recibo / Contrato C&amp;V autenticado</div><div class="doc-meta">Opcional · só anexar se houver</div></div><button class="btn btn-sm">Anexar</button></div>
+              <div class="doc-row"><div class="doc-ic ok">✓</div><div class="doc-info"><div class="doc-name">Histórico de energia/água/IPTU</div><div class="doc-meta">historico_celpe.pdf</div></div><button class="btn btn-sm">Ver</button></div>
+            </div>
+          </section>
+
+          <!-- 8. TERMOS PARA ASSINATURA FÍSICA -->
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">8. Termos para assinatura física</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-primary">Imprimir → assinar → escanear → anexar</span>
+            </div>
+
+            <div class="flow-banner">
+              <b>Fluxo:</b>
+              <span class="flow-step">① Gerar PDF preenchido</span><span class="flow-arrow">→</span>
+              <span class="flow-step">② Imprimir</span><span class="flow-arrow">→</span>
+              <span class="flow-step">③ Cidadão assina no papel</span><span class="flow-arrow">→</span>
+              <span class="flow-step">④ Agente escaneia</span><span class="flow-arrow">→</span>
+              <span class="flow-step">⑤ Anexar ao sistema</span>
+            </div>
+
+            <!-- TERMO DE POSSE -->
+            <div class="term-card scanned">
+              <div class="term-head">
+                <div class="term-doc-ic"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+                <div style="flex:1;">
+                  <div class="term-title">Termo de Posse do Imóvel</div>
+                  <div class="term-desc">Declaração de posse mansa e pacífica — exige titular + 2 testemunhas (RG e CPF de cada)</div>
+                </div>
+                <span class="pill pill-white" style="background:#fff; color:var(--green);">✓ Assinado e anexado</span>
+              </div>
+              <div class="term-fields"><b>Campos auto-preenchidos:</b> Tempo de ocupação: 11 anos · Município: Boquim · Estado civil: união estável · Sem ação judicial</div>
+              <div class="term-file">
+                <div style="color:var(--green); font-size: 18px;">📎</div>
+                <div class="term-file-info">
+                  <div class="term-file-name">termo_posse_assinado.pdf</div>
+                  <div class="term-file-meta">Hoje, 15:02 · escaneado por Ana M. · OCR ✓ (3 assinaturas detectadas)</div>
+                </div>
+                <button class="btn btn-sm" style="background:var(--green); color:#fff; border-color:var(--green);">Ver PDF</button>
+                <button class="btn btn-sm">Substituir</button>
+              </div>
+            </div>
+
+            <!-- DECLARAÇÃO RENDA INFORMAL -->
+            <div class="term-card printed">
+              <div class="term-head">
+                <div class="term-doc-ic"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+                <div style="flex:1;">
+                  <div class="term-title">Declaração de Renda Informal</div>
+                  <div class="term-desc">Substitui contracheque · in loco com fé pública · 2 testemunhas obrigatórias</div>
+                </div>
+                <span class="pill pill-white" style="background:#fff; color:var(--amber);">⌛ Impresso — aguarda escaneamento</span>
+              </div>
+              <div class="term-fields"><b>Campos auto-preenchidos:</b> Profissão: Costureira autônoma · Renda: R$ 1.200,00 · CPF/RG do declarante · Art. 299 CP</div>
+
+              <div class="term-witnesses">
+                <div class="term-witnesses-label">Testemunhas (preencher antes de imprimir):</div>
+                <div class="term-wrow">
+                  <div class="field"><label>Testemunha 1 — Nome</label><input class="input" placeholder="Nome completo" /></div>
+                  <div class="field"><label>RG</label><input class="input" placeholder="0.000.000" /></div>
+                  <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00" /></div>
+                </div>
+                <div class="term-wrow">
+                  <div class="field"><label>Testemunha 2 — Nome</label><input class="input" placeholder="Nome completo" /></div>
+                  <div class="field"><label>RG</label><input class="input" placeholder="0.000.000" /></div>
+                  <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00" /></div>
+                </div>
+              </div>
+
+              <div class="term-file">
+                <div style="color:var(--amber); font-size: 18px;">🖨</div>
+                <div class="term-file-info">
+                  <div class="term-file-name">decl_renda_informal_v2.pdf — aguardando assinatura física</div>
+                  <div class="term-file-meta">Impresso hoje, 14:48 por Ana M.</div>
+                </div>
+                <button class="btn btn-sm" style="background:var(--amber); color:#fff; border-color:var(--amber);">Anexar scan</button>
+                <button class="btn btn-sm">Reimprimir</button>
+              </div>
+            </div>
+
+            <!-- DECLARAÇÃO DE UNIÃO ESTÁVEL -->
+            <div class="term-card ready">
+              <div class="term-head">
+                <div class="term-doc-ic"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+                <div style="flex:1;">
+                  <div class="term-title">Declaração de União Estável</div>
+                  <div class="term-desc">Substitui certidão cartorial · in loco com fé pública · 2 testemunhas</div>
+                </div>
+                <span class="pill pill-white" style="background:#fff; color:var(--primary);">○ Pronto para gerar</span>
+              </div>
+              <div class="term-fields"><b>Campos auto-preenchidos:</b> Convivente: Joaquim Pereira Lima (CPF 712.331.029-08) · convivência > 7 anos</div>
+
+              <div class="term-witnesses">
+                <div class="term-witnesses-label">Testemunhas (preencher antes de imprimir):</div>
+                <div class="term-wrow">
+                  <div class="field"><label>Testemunha 1 — Nome</label><input class="input" placeholder="Nome completo" /></div>
+                  <div class="field"><label>RG</label><input class="input" placeholder="0.000.000" /></div>
+                  <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00" /></div>
+                </div>
+                <div class="term-wrow">
+                  <div class="field"><label>Testemunha 2 — Nome</label><input class="input" placeholder="Nome completo" /></div>
+                  <div class="field"><label>RG</label><input class="input" placeholder="0.000.000" /></div>
+                  <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00" /></div>
+                </div>
+              </div>
+
+              <div class="term-file">
+                <div style="color:var(--primary); font-size: 18px;">📝</div>
+                <div class="term-file-info">
+                  <div class="term-file-name">Pronto para gerar PDF</div>
+                  <div class="term-file-meta">Ao gerar, o sistema preenche todos os campos do modelo oficial</div>
+                </div>
+                <button class="btn btn-sm btn-primary">Gerar PDF</button>
+              </div>
+            </div>
+
+            <!-- TERMO REURB-E -->
+            <div class="term-card na">
+              <div class="term-head">
+                <div class="term-doc-ic"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+                <div style="flex:1;">
+                  <div class="term-title">Termo de Responsabilidade REURB-E</div>
+                  <div class="term-desc">Apenas se a família NÃO atender critérios de gratuidade (Lei 13.465/2017)</div>
+                </div>
+                <span class="pill pill-muted">— Não aplicável</span>
+              </div>
+              <div class="term-fields"><b>Status:</b> Não se aplica — classificação atual é REURB-S (interesse social). Caso reclassifique para REURB-E, o termo será gerado automaticamente aqui.</div>
+            </div>
+
+            <div class="note muted">
+              <div class="note-ic">⚙</div>
+              <div class="note-text">
+                <div class="note-title">Detecção automática ao anexar scan</div>
+                <div class="note-sub">OCR confere CPF/RG, valida campos preenchidos e detecta presença das 3 assinaturas (titular + 2 testemunhas). Documento sem assinatura é rejeitado automaticamente.</div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- RIGHT -->
+        <aside class="col-stack">
+
+          <section class="card">
+            <h3 class="card-title">Status do processo</h3>
+            <div class="status-list">
+              <div class="status-row"><span class="name">Núcleo &amp; Lote</span><span class="pill pill-green">Vinculado</span></div>
+              <div class="status-row"><span class="name">Titular &amp; cônjuge</span><span class="pill pill-green">Completo</span></div>
+              <div class="status-row"><span class="name">Família</span><span class="pill pill-green">Completo</span></div>
+              <div class="status-row"><span class="name">Renda</span><span class="pill pill-amber">Em preenchimento</span></div>
+              <div class="status-row"><span class="name">Endereço &amp; imóvel</span><span class="pill pill-amber">Em preenchimento</span></div>
+              <div class="status-row"><span class="name">Documentos</span><span class="pill pill-amber">9/14 anexados</span></div>
+              <div class="status-row"><span class="name">Termos físicos</span><span class="pill pill-amber">1/3 assinados</span></div>
+              <div class="status-row"><span class="name">Geo &amp; evidências</span><span class="pill pill-muted">Pendente</span></div>
+              <div class="status-row"><span class="name">Validação (2 agentes)</span><span class="pill pill-muted">Aguarda</span></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h3 class="card-title">Geolocalização do domicílio</h3>
+            <div class="map-mini">
+              <div class="road3"></div>
+              <div class="pin"></div>
+            </div>
+            <div>
+              <div class="coord-row"><span>UTM 24L · SIRGAS 2000</span><span></span></div>
+              <div class="coord-val">E: 707.142,30 · N: 8.789.331,82</div>
+              <div class="coord-row" style="margin-top:4px;"><span>Precisão GPS: ±2,1 m · Capturado 14/05 10:42</span></div>
+            </div>
+            <div class="photo-row">
+              <div class="photo">Fachada</div>
+              <div class="photo">Lateral</div>
+              <div class="photo">Comp.</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h3 class="card-title">Cruzamentos automáticos</h3>
+            <div>
+              <div class="cross-row"><div class="cross-ic">✓</div><div><div class="cross-name">CadÚnico (BPC Helena)</div><div class="cross-sub">OK · NIS 162.098.831-47</div></div></div>
+              <div class="cross-row"><div class="cross-ic">✓</div><div><div class="cross-name">Receita Federal — CPF</div><div class="cross-sub">Maria das G. S. Lima · ativo</div></div></div>
+              <div class="cross-row"><div class="cross-ic">✓</div><div><div class="cross-name">INSS — vínculos</div><div class="cross-sub">Sem vínculo formal</div></div></div>
+              <div class="cross-row"><div class="cross-ic">✓</div><div><div class="cross-name">Receita — duplicidade</div><div class="cross-sub">CPF único no núcleo</div></div></div>
+              <div class="cross-row"><div class="cross-ic">✓</div><div><div class="cross-name">CRA-SE / cartório</div><div class="cross-sub">Sem matrícula prévia</div></div></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h3 class="card-title">Trilha de auditoria</h3>
+            <div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Anexou termo_posse_assinado.pdf (OCR ✓)</div><div class="audit-meta">Hoje, 15:02 · Ana M.</div></div></div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Imprimiu Declaração de Renda Informal</div><div class="audit-meta">Hoje, 14:48 · Ana M.</div></div></div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Editou renda familiar bruta</div><div class="audit-meta">Hoje, 14:32 · Ana M.</div></div></div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Anexou luz_ago2025.pdf</div><div class="audit-meta">Hoje, 11:08 · Ana M.</div></div></div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Rejeitou versão antiga do termo</div><div class="audit-meta">Ontem, 16:50 · Carlos P.</div></div></div>
+              <div class="audit-row"><div class="audit-dot"></div><div><div class="audit-action">Iniciou ficha #SE-2026-00482</div><div class="audit-meta">Ontem, 09:14 · Ana M.</div></div></div>
+            </div>
+          </section>
+
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
