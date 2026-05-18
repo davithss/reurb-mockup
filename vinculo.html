@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>REURB Sergipe — Vínculo Lote ↔ Beneficiário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+    --primary: #0e49a1;
+    --primary-dark: #093279;
+    --primary-soft: #edf2fd;
+    --green: #059669;
+    --green-soft: #e0f6ed;
+    --amber: #d98510;
+    --amber-soft: #fef2d5;
+    --red: #dc2626;
+    --red-soft: #fde8e8;
+    --purple: #7c3aed;
+    --purple-soft: #f1eefd;
+    --sidebar: #0f172a;
+    --sidebar-item: #26334a;
+    --sidebar-text: #bbc4d4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--sidebar); color: #fff; padding: 24px 16px; }
+  .brand { display: flex; gap: 10px; align-items: center; padding-bottom: 24px; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-text); }
+  .nav-section { margin-top: 16px; padding-left: 8px; }
+  .nav-section-title { font-size: 10px; font-weight: 600; color: var(--subtle);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+  .nav-item {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    color: var(--sidebar-text); cursor: pointer; user-select: none; text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item .kbd {
+    background: var(--sidebar-item); padding: 3px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 600;
+  }
+  .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+  .nav-item.active .kbd { background: rgba(255,255,255,0.2); color: #fff; }
+  .nav-label { font-size: 13px; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px 12px 32px;
+    display: flex; gap: 16px; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .breadcrumb { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .breadcrumb .sep { color: var(--subtle); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .search {
+    width: 340px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0 12px; display: flex; gap: 8px; align-items: center;
+    color: var(--subtle); font-size: 12px;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .avatar {
+    height: 38px; padding: 0 12px 0 6px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 500;
+  }
+  .avatar-dot { width: 26px; height: 26px; border-radius: 999px; background: var(--primary); }
+
+  /* CONTENT */
+  .content { padding: 24px 32px 48px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* HEADER */
+  .page-header { display: flex; gap: 16px; align-items: center; }
+  .page-title-row { display: flex; gap: 10px; align-items: center; }
+  .page-title { font-size: 22px; font-weight: 600; margin: 0; }
+  .page-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .page-header .spacer { flex: 1; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    background: var(--surface); color: var(--text); border-color: var(--border);
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline-primary { background: var(--surface); color: var(--primary); border-color: var(--primary); }
+  .btn-outline-danger { background: var(--surface); color: var(--red); border-color: var(--red); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-xs { padding: 4px 8px; font-size: 11px; }
+  .btn-icon { padding: 6px; width: 30px; height: 30px; justify-content: center; border-radius: 6px; }
+
+  /* PILLS */
+  .pill {
+    display: inline-flex; gap: 6px; align-items: center; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; line-height: 1;
+  }
+  .pill-green { background: var(--green-soft); color: var(--green); }
+  .pill-amber { background: var(--amber-soft); color: var(--amber); }
+  .pill-red { background: var(--red-soft); color: var(--red); }
+  .pill-primary { background: var(--primary-soft); color: var(--primary); }
+  .pill-muted { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .pill-white { background: #fff; color: var(--primary); }
+
+  /* LAYOUT GRID */
+  .grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: start; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+  .card-head { display: flex; gap: 10px; align-items: center; }
+  .card-head .spacer { flex: 1; }
+  .card-head .hint { font-size: 11px; color: var(--muted); }
+  .col-stack { display: flex; flex-direction: column; gap: 20px; }
+
+  /* FIELDS */
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .input, select {
+    appearance: none; -webkit-appearance: none;
+    height: 40px; padding: 0 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--text); font-family: inherit; width: 100%;
+  }
+  .input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+  .input::placeholder { color: var(--subtle); }
+  select { background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2364748b' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 10px; padding-right: 32px; }
+
+  /* STAT CARDS ROW */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-value { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .stat-pct { font-size: 12px; font-weight: 600; color: var(--green); margin-top: 2px; }
+  .stat-card.amber .stat-value { color: var(--amber); }
+  .stat-card.red .stat-value { color: var(--red); }
+  .stat-card.primary .stat-value { color: var(--primary); }
+
+  /* FILTERS BAR */
+  .filters-bar {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .filters-bar .input { height: 38px; width: 280px; flex-shrink: 0; }
+  .filters-bar select { height: 38px; width: 160px; flex-shrink: 0; }
+  .filters-bar .btn { height: 38px; }
+
+  /* MATRIX TABLE */
+  .matrix-wrap { overflow-x: auto; }
+  table.matrix { width: 100%; border-collapse: collapse; min-width: 900px; }
+  table.matrix thead th {
+    background: var(--bg); padding: 10px 12px; text-align: left; font-size: 11px;
+    color: var(--muted); font-weight: 600; white-space: nowrap;
+  }
+  table.matrix thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.matrix thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.matrix tbody td {
+    padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle;
+  }
+  table.matrix tbody tr:last-child td { border-bottom: none; }
+  table.matrix tbody tr:hover td { background: #fafbfc; }
+  table.matrix tbody tr.selected td { background: var(--primary-soft); }
+  .cb { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong);
+    background: #fff; display: inline-block; cursor: pointer; }
+  .cb.checked { background: var(--primary); border-color: var(--primary); }
+  .td-bold { font-weight: 600; }
+  .td-muted { color: var(--muted); }
+  .td-family { display: flex; flex-direction: column; gap: 1px; }
+  .td-family-name { font-weight: 500; font-size: 12px; }
+  .td-family-cpf { font-size: 11px; color: var(--muted); }
+  .ficha-link {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600;
+    color: var(--primary); text-decoration: none; padding: 3px 7px; border-radius: 5px;
+    background: var(--primary-soft); white-space: nowrap;
+  }
+  .ficha-none { font-size: 11px; color: var(--subtle); }
+  .action-btns { display: flex; gap: 4px; align-items: center; }
+
+  /* PAGINATION */
+  .pagination-bar { display: flex; gap: 10px; align-items: center; }
+  .pagination-bar .pager { display: flex; gap: 4px; }
+  .page-btn {
+    width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted);
+  }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .pagination-bar .rows-sel { height: 30px; font-size: 12px; width: 70px; }
+  .pagination-bar .info { font-size: 12px; color: var(--muted); }
+  .pagination-bar .spacer { flex: 1; }
+
+  /* MAP MINI */
+  .map-mini {
+    width: 100%; height: 150px; border-radius: 8px;
+    background: linear-gradient(135deg, #dceddc 0%, #c8dceb 100%); position: relative; overflow: hidden;
+  }
+  .map-mini .road-h {
+    position: absolute; height: 2px; left: 0; right: 0; background: #fff; opacity: 0.6;
+  }
+  .map-mini .road-v {
+    position: absolute; width: 2px; top: 0; bottom: 0; background: #fff; opacity: 0.6;
+  }
+  .map-mini .lot-box {
+    position: absolute; border: 2.5px solid var(--primary); background: rgba(14,73,161,0.2);
+    border-radius: 3px;
+  }
+  .map-mini .map-label {
+    position: absolute; font-size: 9px; font-weight: 700; color: var(--primary); white-space: nowrap;
+  }
+  .map-mini .pin {
+    position: absolute; width: 12px; height: 12px; border-radius: 999px;
+    background: var(--red); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  /* DETAIL FIELD LIST */
+  .detail-list { display: flex; flex-direction: column; gap: 8px; }
+  .detail-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .detail-row .dl { color: var(--muted); font-weight: 500; width: 90px; flex-shrink: 0; }
+  .detail-row .dv { font-weight: 600; color: var(--text); }
+  .detail-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+
+  /* CONFLICT CARD */
+  .conflict-item {
+    border: 1px solid var(--red); background: var(--red-soft); border-radius: 8px; padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .conflict-header { font-size: 12px; font-weight: 600; color: var(--red); }
+  .conflict-claimants { display: flex; flex-direction: column; gap: 6px; }
+  .claimant { display: flex; gap: 8px; align-items: center; font-size: 12px; }
+  .claimant-ic {
+    width: 24px; height: 24px; border-radius: 999px; background: var(--red);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0;
+  }
+  .claimant-info .name { font-weight: 600; }
+  .claimant-info .meta { font-size: 11px; color: var(--muted); }
+  .vs-divider { font-size: 10px; font-weight: 700; color: var(--red); text-align: center; padding: 2px 0; letter-spacing: 0.1em; }
+
+  /* FAMILY CARD */
+  .fam-header { display: flex; gap: 12px; align-items: center; }
+  .fam-avatar {
+    width: 40px; height: 40px; border-radius: 999px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .fam-name { font-size: 14px; font-weight: 600; }
+  .fam-ficha { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .fam-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fam-stat { background: var(--bg); border-radius: 8px; padding: 10px; }
+  .fam-stat .fs-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fam-stat .fs-value { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+  /* AUDIT */
+  .audit-row { display: flex; gap: 10px; padding: 6px 0; }
+  .audit-line { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .audit-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--primary); flex-shrink: 0; margin-top: 4px; }
+  .audit-trail { width: 1px; flex: 1; background: var(--border); }
+  .audit-action { font-size: 12px; font-weight: 500; }
+  .audit-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* DUAL VALIDATION BANNER */
+  .dual-check-banner {
+    background: linear-gradient(135deg, #edf2fd 0%, #f0f9f4 100%);
+    border: 1px solid var(--primary); border-radius: 10px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .dual-check-title { font-size: 13px; font-weight: 700; color: var(--primary); display: flex; gap: 8px; align-items: center; }
+  .dual-check-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .approver-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .approver-box {
+    border-radius: 8px; padding: 12px; border: 1px solid var(--border); background: #fff;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .approver-box.approved { border-color: var(--green); background: var(--green-soft); }
+  .approver-box.pending { border-color: var(--amber); background: var(--amber-soft); }
+  .approver-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+  .approver-name { font-size: 13px; font-weight: 600; }
+  .approver-status { display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600; }
+  .status-dot-ok { width: 8px; height: 8px; border-radius: 999px; background: var(--green); }
+  .status-dot-pend { width: 8px; height: 8px; border-radius: 999px; background: var(--amber); }
+  .approver-date { font-size: 11px; color: var(--muted); }
+
+  /* ROW HELPERS */
+  .row { display: grid; gap: 16px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+
+  .note {
+    border-radius: 8px; padding: 12px 14px; display: flex; gap: 10px; align-items: center;
+  }
+  .note.amber { background: var(--amber-soft); }
+  .note.red { background: var(--red-soft); }
+  .note-ic {
+    width: 28px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .note.amber .note-ic { background: var(--amber); }
+  .note.red .note-ic { background: var(--red); }
+  .note-text { flex: 1; }
+  .note-title { font-size: 12px; font-weight: 600; }
+  .note-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+    <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">SE</div>
+      <div>
+        <div class="brand-title">REURB Sergipe</div>
+        <div class="brand-sub">Programa Casa Legal · SEAD</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Visão Geral</div>
+      <a href="index.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Dashboard</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Operacional</div>
+      <a href="mobilizacao.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mobilização Social</span></div></a>
+      <a href="cadastro-social.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Social</span></div></a>
+      <a href="cadastro-tecnico.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Técnico</span></div></a>
+      <a href="vinculo.html" style="text-decoration:none"><div class="nav-item active"><span class="nav-label">Vínculo Lote ↔ Família</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Processos</div>
+      <a href="workflow.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Workflow PRF → CRF</span></div></a>
+      <div class="nav-item"><span class="nav-label">Pós-Titulação</span></div>
+      <a href="mapa.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mapa Interativo</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Gestão</div>
+      <a href="indicadores.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Indicadores &amp; IMR</span></div></a>
+      <div class="nav-item"><span class="nav-label">Transparência</span></div>
+      <a href="auditoria.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Auditoria</span></div></a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="display:flex;flex-direction:column;min-height:100vh;overflow:auto;">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Operacional</span>
+        <span class="sep">›</span>
+        <span class="current">Vínculo Lote ↔ Beneficiário</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Pesquisar no sistema…
+      </div>
+      <div class="icon-btn" title="Notificações">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="avatar">
+        <div class="avatar-dot" style="display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">AM</div>
+        <span>Ana M. · Agente</span>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div>
+          <div class="page-title-row">
+            <h1 class="page-title">Vínculo Lote ↔ Beneficiário</h1>
+            <span class="pill pill-green">REURB-S</span>
+            <span class="pill pill-muted">2.3</span>
+          </div>
+          <div class="page-sub">Gerenciamento de associações entre lotes e famílias beneficiárias</div>
+        </div>
+        <div class="spacer"></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar Matriz
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Vínculo
+          </button>
+        </div>
+      </div>
+
+      <!-- SUMMARY STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total de Lotes</div>
+          <div class="stat-value primary" style="color:var(--text);">2.847</div>
+          <div class="stat-pct" style="color:var(--muted);">área urbana regularizável</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Vinculados</div>
+          <div class="stat-value" style="color:var(--green);">1.984</div>
+          <div class="stat-pct">69,7% do total</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Pendentes</div>
+          <div class="stat-value">623</div>
+          <div style="font-size:12px;color:var(--amber);margin-top:2px;">aguardando vinculação</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Conflitos</div>
+          <div class="stat-value">240</div>
+          <div style="font-size:12px;color:var(--red);margin-top:2px;">requerem resolução</div>
+        </div>
+      </div>
+
+      <!-- FILTERS BAR -->
+      <div class="filters-bar">
+        <input type="text" class="input" placeholder="Buscar por lote, quadra ou família…" style="width:280px;" />
+        <select style="width:160px;">
+          <option>Todos os Núcleos</option>
+          <option>Bom Jardim</option>
+          <option>Santa Maria</option>
+          <option>João Alves</option>
+          <option>Coroa do Meio</option>
+          <option>Lamarão</option>
+        </select>
+        <select style="width:140px;">
+          <option>Todos os Status</option>
+          <option>Vinculado</option>
+          <option>Pendente</option>
+          <option>Conflito</option>
+        </select>
+        <select style="width:130px;">
+          <option>Tipo: Todos</option>
+          <option>REURB-S</option>
+          <option>REURB-E</option>
+        </select>
+        <button class="btn btn-primary" style="height:38px;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          Filtrar
+        </button>
+      </div>
+
+      <!-- MAIN CONTENT GRID -->
+      <div class="grid-main">
+
+        <!-- LEFT: MATRIX TABLE CARD -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card" style="gap:12px;">
+            <div class="card-head">
+              <h2 class="card-title">Matriz de Vínculos</h2>
+              <div class="spacer"></div>
+              <div class="hint">12 de 2.847 registros</div>
+            </div>
+
+            <div class="matrix-wrap">
+              <table class="matrix">
+                <thead>
+                  <tr>
+                    <th style="width:32px;"><div class="cb"></div></th>
+                    <th>Quadra</th>
+                    <th>Lote</th>
+                    <th>Área m²</th>
+                    <th>Núcleo</th>
+                    <th>Família Vinculada</th>
+                    <th>REURB</th>
+                    <th>Ficha Social</th>
+                    <th>Ficha Técnica</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- ROW 1 — Vinculado, selected (highlighted) -->
+                  <tr class="selected">
+                    <td><div class="cb checked"></div></td>
+                    <td class="td-bold">7</td>
+                    <td class="td-bold">14B</td>
+                    <td class="td-muted">187,42</td>
+                    <td>Bom Jardim</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Maria Aparecida Silva</span>
+                        <span class="td-family-cpf">***.***.456-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00482</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00892</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar">
+                          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        <button class="btn btn-icon" title="Editar">
+                          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);">
+                          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 2 — Vinculado -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">3</td>
+                    <td class="td-bold">5A</td>
+                    <td class="td-muted">214,00</td>
+                    <td>Santa Maria</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">José Carlos Menezes</span>
+                        <span class="td-family-cpf">***.***.123-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00391</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00741</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 3 — Vinculado -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">12</td>
+                    <td class="td-bold">8</td>
+                    <td class="td-muted">160,50</td>
+                    <td>Lamarão</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Ana Lucia Ferreira</span>
+                        <span class="td-family-cpf">***.***.789-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00510</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00920</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 4 — Vinculado -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">1</td>
+                    <td class="td-bold">2</td>
+                    <td class="td-muted">198,70</td>
+                    <td>Coroa do Meio</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Raimundo Souza Santos</span>
+                        <span class="td-family-cpf">***.***.334-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-primary" style="font-size:10px;padding:3px 7px;">E</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00268</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00613</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 5 — Vinculado -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">9</td>
+                    <td class="td-bold">17C</td>
+                    <td class="td-muted">142,30</td>
+                    <td>João Alves</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Francisca Oliveira Lima</span>
+                        <span class="td-family-cpf">***.***.901-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00455</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00835</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 6 — Vinculado -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">5</td>
+                    <td class="td-bold">11</td>
+                    <td class="td-muted">220,80</td>
+                    <td>Bom Jardim</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Antônio Rodrigues Costa</span>
+                        <span class="td-family-cpf">***.***.672-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00380</a></td>
+                    <td><a href="#" class="ficha-link">TEC-00701</a></td>
+                    <td><span class="pill pill-green">Vinculado</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                        <button class="btn btn-icon btn-outline-danger" title="Desvincular" style="color:var(--red);border-color:var(--red);"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 7 — Pendente Técnico -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">2</td>
+                    <td class="td-bold">33</td>
+                    <td class="td-muted">175,00</td>
+                    <td>Santa Maria</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Lurdes Maria Pinto</span>
+                        <span class="td-family-cpf">***.***.218-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00519</a></td>
+                    <td><span class="ficha-none">— sem ficha</span></td>
+                    <td><span class="pill pill-amber">Pendente Técnico</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 8 — Pendente Técnico -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">8</td>
+                    <td class="td-bold">6B</td>
+                    <td class="td-muted">193,25</td>
+                    <td>Coroa do Meio</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Severino Alves Barros</span>
+                        <span class="td-family-cpf">***.***.547-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00533</a></td>
+                    <td><span class="ficha-none">— sem ficha</span></td>
+                    <td><span class="pill pill-amber">Pendente Técnico</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 9 — Pendente Técnico -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">15</td>
+                    <td class="td-bold">9</td>
+                    <td class="td-muted">155,80</td>
+                    <td>João Alves</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name">Conceição Nunes Vieira</span>
+                        <span class="td-family-cpf">***.***.880-**</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><a href="#" class="ficha-link">SE-2026-00487</a></td>
+                    <td><span class="ficha-none">— sem ficha</span></td>
+                    <td><span class="pill pill-amber">Pendente Técnico</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-icon" title="Editar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 10 — Pendente Social -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">4</td>
+                    <td class="td-bold">21</td>
+                    <td class="td-muted">201,15</td>
+                    <td>Bom Jardim</td>
+                    <td><span class="ficha-none">— sem família vinculada</span></td>
+                    <td><span class="pill pill-muted" style="font-size:10px;padding:3px 7px;">—</span></td>
+                    <td><span class="ficha-none">— sem ficha</span></td>
+                    <td><a href="#" class="ficha-link">TEC-00774</a></td>
+                    <td><span class="pill pill-amber">Pendente Social</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-primary btn-xs">Vincular Família</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 11 — Pendente Social -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">11</td>
+                    <td class="td-bold">4A</td>
+                    <td class="td-muted">168,90</td>
+                    <td>Lamarão</td>
+                    <td><span class="ficha-none">— sem família vinculada</span></td>
+                    <td><span class="pill pill-muted" style="font-size:10px;padding:3px 7px;">—</span></td>
+                    <td><span class="ficha-none">— sem ficha</span></td>
+                    <td><a href="#" class="ficha-link">TEC-00988</a></td>
+                    <td><span class="pill pill-amber">Pendente Social</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-primary btn-xs">Vincular Família</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- ROW 12 — Conflito -->
+                  <tr>
+                    <td><div class="cb"></div></td>
+                    <td class="td-bold">3</td>
+                    <td class="td-bold">22B</td>
+                    <td class="td-muted">185,60</td>
+                    <td>Santa Maria</td>
+                    <td>
+                      <div class="td-family">
+                        <span class="td-family-name" style="color:var(--red);">2 reivindicantes</span>
+                        <span class="td-family-cpf">João Santos / Pedro Ferreira</span>
+                      </div>
+                    </td>
+                    <td><span class="pill pill-green" style="font-size:10px;padding:3px 7px;">S</span></td>
+                    <td><span class="ficha-none">2 fichas</span></td>
+                    <td><a href="#" class="ficha-link">TEC-00812</a></td>
+                    <td><span class="pill pill-red">Conflito</span></td>
+                    <td>
+                      <div class="action-btns">
+                        <button class="btn btn-icon" title="Visualizar"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        <button class="btn btn-outline-danger btn-xs">Resolver</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination-bar">
+              <span class="info">Exibindo 1–12 de 2.847 registros</span>
+              <div class="spacer"></div>
+              <span style="font-size:12px;color:var(--muted);margin-right:4px;">Linhas por página:</span>
+              <select class="rows-sel" style="width:70px;height:30px;font-size:12px;">
+                <option>12</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+              </select>
+              <div class="pager">
+                <div class="page-btn">‹</div>
+                <div class="page-btn active">1</div>
+                <div class="page-btn">2</div>
+                <div class="page-btn">3</div>
+                <div class="page-btn" style="font-size:10px;color:var(--subtle);">…</div>
+                <div class="page-btn">238</div>
+                <div class="page-btn">›</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DUAL VALIDATION BANNER -->
+          <div class="dual-check-banner">
+            <div>
+              <div class="dual-check-title">
+                <svg width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Validação Dual Obrigatória
+              </div>
+              <div class="dual-check-sub">Este vínculo requer aprovação de 2 agentes independentes antes de gerar o título de regularização.</div>
+            </div>
+            <div class="approver-boxes">
+              <div class="approver-box approved">
+                <div class="approver-label">Agente 1</div>
+                <div class="approver-name">Ana M. Santana</div>
+                <div class="approver-status">
+                  <div class="status-dot-ok"></div>
+                  <span style="color:var(--green);">Aprovado</span>
+                </div>
+                <div class="approver-date">18/05/2026 às 09:14</div>
+              </div>
+              <div class="approver-box pending">
+                <div class="approver-label">Agente 2</div>
+                <div class="approver-name">Carlos F. Barbosa</div>
+                <div class="approver-status">
+                  <div class="status-dot-pend"></div>
+                  <span style="color:var(--amber);">Revisão Pendente</span>
+                </div>
+                <div class="approver-date">Aguardando revisão…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-stack">
+
+          <!-- LOT DETAILS CARD -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Detalhes do Lote Selecionado</h2>
+            </div>
+
+            <!-- MAP MINI -->
+            <div class="map-mini">
+              <!-- Roads horizontal -->
+              <div class="road-h" style="top:38px;"></div>
+              <div class="road-h" style="top:80px;"></div>
+              <div class="road-h" style="top:122px;"></div>
+              <!-- Roads vertical -->
+              <div class="road-v" style="left:60px;"></div>
+              <div class="road-v" style="left:130px;"></div>
+              <div class="road-v" style="left:200px;"></div>
+              <!-- Lot highlight -->
+              <div class="lot-box" style="top:42px;left:65px;width:60px;height:36px;"></div>
+              <div class="map-label" style="top:47px;left:68px;">Q7/L14B</div>
+              <!-- Pin -->
+              <div class="pin" style="top:54px;left:88px;"></div>
+              <!-- Scale indicator -->
+              <div style="position:absolute;bottom:8px;right:10px;font-size:9px;color:#fff;background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-weight:600;">1:500</div>
+            </div>
+
+            <div class="detail-list">
+              <div class="detail-row">
+                <span class="dl">Quadra / Lote</span>
+                <span class="dv">7 / 14B</span>
+              </div>
+              <div class="detail-row">
+                <span class="dl">Área total</span>
+                <span class="dv">187,42 m²</span>
+              </div>
+              <div class="detail-row">
+                <span class="dl">Testada</span>
+                <span class="dv">12,30 m</span>
+              </div>
+              <div class="detail-row">
+                <span class="dl">Núcleo</span>
+                <span class="dv">Bom Jardim</span>
+              </div>
+              <div class="detail-row">
+                <span class="dl">Zoneamento</span>
+                <span class="dv">ZEU-2</span>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">Status das Fichas</div>
+              <div class="detail-chips">
+                <span class="pill pill-green">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  Técnico OK
+                </span>
+                <span class="pill pill-amber">
+                  <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Jurídico Pend.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAMILY CARD -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Família Vinculada</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-green">REURB-S</span>
+            </div>
+
+            <div class="fam-header">
+              <div class="fam-avatar">M</div>
+              <div>
+                <div class="fam-name">Maria Aparecida Silva</div>
+                <div class="fam-ficha">CPF: ***.***.456-** · Ficha SE-2026-00482</div>
+              </div>
+            </div>
+
+            <div class="fam-stats">
+              <div class="fam-stat">
+                <div class="fs-label">Membros</div>
+                <div class="fs-value">4 <span style="font-size:12px;font-weight:400;color:var(--muted);">pessoas</span></div>
+              </div>
+              <div class="fam-stat">
+                <div class="fs-label">Renda Familiar</div>
+                <div class="fs-value" style="font-size:13px;">R$ 1.820<span style="font-size:11px;font-weight:400;color:var(--muted);">/mês</span></div>
+              </div>
+            </div>
+
+            <div class="detail-row" style="background:var(--green-soft);border-radius:7px;padding:8px 10px;">
+              <span class="dl" style="color:var(--green);">REURB</span>
+              <span class="dv" style="color:var(--green);">S — Isento de taxas</span>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-outline-primary btn-sm" style="flex:1;justify-content:center;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Ver Cadastro Social
+              </button>
+              <button class="btn btn-outline-danger btn-sm" style="flex:1;justify-content:center;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Desvincular
+              </button>
+            </div>
+          </div>
+
+          <!-- CONFLICTS CARD -->
+          <div class="card" style="border-color:var(--red);">
+            <div class="card-head">
+              <h2 class="card-title" style="color:var(--red);">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:4px;vertical-align:-2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Conflitos Detectados
+              </h2>
+              <div class="spacer"></div>
+              <span class="pill pill-red">1 conflito</span>
+            </div>
+
+            <div class="conflict-item">
+              <div class="conflict-header">Quadra 3 · Lote 22B — Santa Maria</div>
+              <div class="conflict-claimants">
+                <div class="claimant">
+                  <div class="claimant-ic">J</div>
+                  <div class="claimant-info">
+                    <div class="name">João Batista Santos</div>
+                    <div class="meta">CPF: ***.***.311-** · desde 12/02/2026</div>
+                  </div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="claimant">
+                  <div class="claimant-ic">P</div>
+                  <div class="claimant-info">
+                    <div class="name">Pedro Henrique Ferreira</div>
+                    <div class="meta">CPF: ***.***.597-** · desde 15/03/2026</div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-outline-danger btn-sm" style="width:100%;justify-content:center;">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Resolver Conflito
+              </button>
+            </div>
+          </div>
+
+          <!-- AUDIT HISTORY CARD -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Histórico de Alterações</h2>
+              <div class="spacer"></div>
+              <span style="font-size:11px;color:var(--primary);font-weight:600;cursor:pointer;">Ver tudo</span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0;">
+
+              <div class="audit-row">
+                <div class="audit-line">
+                  <div class="audit-dot" style="background:var(--green);"></div>
+                  <div class="audit-trail"></div>
+                </div>
+                <div>
+                  <div class="audit-action">Vínculo confirmado — Q7/L14B ↔ Maria A. Silva</div>
+                  <div class="audit-meta">Ana M. Santana · 18/05/2026 09:14</div>
+                </div>
+              </div>
+
+              <div class="audit-row">
+                <div class="audit-line">
+                  <div class="audit-dot"></div>
+                  <div class="audit-trail"></div>
+                </div>
+                <div>
+                  <div class="audit-action">Lote 14B atualizado — área corrigida</div>
+                  <div class="audit-meta">Carlos F. Barbosa · 17/05/2026 14:30</div>
+                </div>
+              </div>
+
+              <div class="audit-row">
+                <div class="audit-line">
+                  <div class="audit-dot"></div>
+                  <div class="audit-trail"></div>
+                </div>
+                <div>
+                  <div class="audit-action">Família editada — inclusão de membro</div>
+                  <div class="audit-meta">Ana M. Santana · 15/05/2026 11:05</div>
+                </div>
+              </div>
+
+              <div class="audit-row">
+                <div class="audit-line">
+                  <div class="audit-dot" style="background:var(--amber);"></div>
+                  <div class="audit-trail"></div>
+                </div>
+                <div>
+                  <div class="audit-action">Ficha técnica vinculada — TEC-00892</div>
+                  <div class="audit-meta">Carlos F. Barbosa · 10/05/2026 16:48</div>
+                </div>
+              </div>
+
+              <div class="audit-row">
+                <div class="audit-line">
+                  <div class="audit-dot" style="background:var(--primary);"></div>
+                </div>
+                <div>
+                  <div class="audit-action">Pré-vínculo criado — pendência social registrada</div>
+                  <div class="audit-meta">Sistema · 02/05/2026 08:00</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- end right col-stack -->
+
+      </div><!-- end grid-main -->
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+
+</div><!-- end app -->
+</body>
+</html>

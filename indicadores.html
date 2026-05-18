@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>REURB Sergipe — Indicadores &amp; IMR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+    --primary: #0e49a1;
+    --primary-dark: #093279;
+    --primary-soft: #edf2fd;
+    --green: #059669;
+    --green-soft: #e0f6ed;
+    --amber: #d98510;
+    --amber-soft: #fef2d5;
+    --red: #dc2626;
+    --red-soft: #fde8e8;
+    --sidebar: #0f172a;
+    --sidebar-item: #26334a;
+    --sidebar-text: #bbc4d4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--sidebar); color: #fff; padding: 24px 16px; }
+  .brand { display: flex; gap: 10px; align-items: center; padding-bottom: 24px; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-text); }
+  .nav-section { margin-top: 16px; padding-left: 8px; }
+  .nav-section-title { font-size: 10px; font-weight: 600; color: var(--subtle);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+  .nav-item {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    color: var(--sidebar-text); cursor: pointer; user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+  .nav-label { font-size: 13px; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; gap: 16px; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .breadcrumb { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .breadcrumb .sep { color: var(--subtle); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .avatar {
+    height: 38px; padding: 0 12px 0 6px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 500;
+  }
+  .avatar-dot { width: 26px; height: 26px; border-radius: 999px; background: var(--primary); }
+
+  /* CONTENT */
+  .content { padding: 24px 32px 48px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* HEADER */
+  .page-title { font-size: 22px; font-weight: 600; margin: 0; }
+  .page-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+  .card-head { display: flex; gap: 10px; align-items: center; }
+
+  /* TABLE */
+  table.data { width: 100%; border-collapse: collapse; }
+  table.data thead th {
+    background: var(--bg); padding: 10px 14px; text-align: left;
+    font-size: 11px; color: var(--muted); font-weight: 600;
+  }
+  table.data thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.data thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.data tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  table.data tbody tr:last-child td { border-bottom: none; }
+  table.data tbody td.strong { font-weight: 500; }
+  table.data tbody td.muted { color: var(--muted); }
+  table.data tbody td.em { color: var(--subtle); font-style: italic; }
+
+  /* NOTE BOX */
+  .note-box {
+    background: var(--primary-soft); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">SE</div>
+      <div>
+        <div class="brand-title">REURB Sergipe</div>
+        <div class="brand-sub">Programa Casa Legal · SEAD</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Visão Geral</div>
+      <a href="index.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Dashboard</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Operacional</div>
+      <a href="mobilizacao.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mobilização Social</span></div></a>
+      <a href="cadastro-social.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Social</span></div></a>
+      <a href="cadastro-tecnico.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Técnico</span></div></a>
+      <a href="vinculo.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Vínculo Lote ↔ Família</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Processos</div>
+      <a href="workflow.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Workflow PRF → CRF</span></div></a>
+      <div class="nav-item"><span class="nav-label">Pós-Titulação</span></div>
+      <a href="mapa.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mapa Interativo</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Gestão</div>
+      <a href="indicadores.html" style="text-decoration:none"><div class="nav-item active"><span class="nav-label">Indicadores &amp; IMR</span></div></a>
+      <div class="nav-item"><span class="nav-label">Transparência</span></div>
+      <a href="auditoria.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Auditoria</span></div></a>
+    </div>
+  </aside>
+
+  <div style="display:flex; flex-direction:column; min-height:100vh;">
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Gestão</span>
+        <span class="sep">›</span>
+        <span class="current">Indicadores &amp; IMR</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="avatar">
+        <div class="avatar-dot"></div>
+        Técnico SEAD
+      </div>
+    </div>
+
+    <div class="content">
+      <div>
+        <h1 class="page-title">Indicadores &amp; IMR</h1>
+        <div class="page-sub">Indicadores de Medição de Resultado previstos no escopo contratual</div>
+      </div>
+
+      <!-- Card 1: Tabela de IMR -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Indicadores de Medição de Resultado (IMR)</span>
+        </div>
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Unidade</th>
+              <th>Meta Contratual</th>
+              <th>Periodicidade</th>
+              <th>Realizado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="strong">IMR-01</td>
+              <td>Famílias cadastradas</td>
+              <td class="muted">Famílias</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Mensal</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-02</td>
+              <td>Levantamentos topográficos realizados</td>
+              <td class="muted">Levantamentos</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Mensal</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-03</td>
+              <td>Títulos emitidos (CRF)</td>
+              <td class="muted">Títulos</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Trimestral</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-04</td>
+              <td>Prazo médio de análise jurídica</td>
+              <td class="muted">Dias</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Mensal</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-05</td>
+              <td>Audiências públicas realizadas</td>
+              <td class="muted">Audiências</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Semestral</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-06</td>
+              <td>Índice de satisfação dos beneficiários</td>
+              <td class="muted">%</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Semestral</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-07</td>
+              <td>Núcleos com mobilização concluída</td>
+              <td class="muted">Núcleos</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Trimestral</td>
+              <td class="em">—</td>
+            </tr>
+            <tr>
+              <td class="strong">IMR-08</td>
+              <td>Processos registrados em cartório</td>
+              <td class="muted">Processos</td>
+              <td class="muted">A definir</td>
+              <td class="muted">Trimestral</td>
+              <td class="em">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Card 2: Nota informativa -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Observação</span>
+        </div>
+        <div class="note-box">
+          Os dados de desempenho serão integrados ao sistema após definição das fontes de dados e período de medição. Os indicadores acima são baseados no escopo contratual previsto.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

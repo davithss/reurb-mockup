@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>REURB Sergipe — Cadastro Técnico-Urbanístico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+    --primary: #0e49a1;
+    --primary-dark: #093279;
+    --primary-soft: #edf2fd;
+    --green: #059669;
+    --green-soft: #e0f6ed;
+    --amber: #d98510;
+    --amber-soft: #fef2d5;
+    --red: #dc2626;
+    --red-soft: #fde8e8;
+    --purple: #7c3aed;
+    --purple-soft: #f1eefd;
+    --sidebar: #0f172a;
+    --sidebar-item: #26334a;
+    --sidebar-text: #bbc4d4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--sidebar); color: #fff; padding: 24px 16px; }
+  .brand { display: flex; gap: 10px; align-items: center; padding-bottom: 24px; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-text); }
+  .nav-section { margin-top: 16px; padding-left: 8px; }
+  .nav-section-title { font-size: 10px; font-weight: 600; color: var(--subtle);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+  .nav-item {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    color: var(--sidebar-text); cursor: pointer; user-select: none; text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item .kbd {
+    background: var(--sidebar-item); padding: 3px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 600;
+  }
+  .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+  .nav-item.active .kbd { background: rgba(255,255,255,0.2); color: #fff; }
+  .nav-label { font-size: 13px; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px 12px 32px;
+    display: flex; gap: 16px; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .breadcrumb { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .breadcrumb .sep { color: var(--subtle); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .search {
+    width: 340px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0 12px; display: flex; gap: 8px; align-items: center;
+    color: var(--subtle); font-size: 12px;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .avatar {
+    height: 38px; padding: 0 12px 0 6px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 500;
+  }
+  .avatar-dot { width: 26px; height: 26px; border-radius: 999px; background: var(--primary); }
+
+  /* CONTENT */
+  .content { padding: 24px 32px 48px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* HEADER */
+  .page-header { display: flex; gap: 16px; align-items: center; }
+  .page-title-row { display: flex; gap: 10px; align-items: center; }
+  .page-title { font-size: 22px; font-weight: 600; margin: 0; }
+  .page-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .page-header .spacer { flex: 1; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    background: var(--surface); color: var(--text); border-color: var(--border);
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline-primary { background: var(--surface); color: var(--primary); border-color: var(--primary); }
+  .btn-outline-danger { background: var(--surface); color: var(--red); border-color: var(--red); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-xs { padding: 4px 8px; font-size: 11px; }
+
+  /* PILLS */
+  .pill {
+    display: inline-flex; gap: 6px; align-items: center; padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; line-height: 1;
+  }
+  .pill-green { background: var(--green-soft); color: var(--green); }
+  .pill-amber { background: var(--amber-soft); color: var(--amber); }
+  .pill-red { background: var(--red-soft); color: var(--red); }
+  .pill-primary { background: var(--primary-soft); color: var(--primary); }
+  .pill-muted { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .pill-white { background: #fff; color: var(--primary); }
+
+  /* STEPPER */
+  .stepper {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; display: flex; gap: 4px; align-items: center; overflow-x: auto;
+  }
+  .step { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .step .circle {
+    width: 26px; height: 26px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; background: var(--bg); border: 1px solid var(--border-strong); color: var(--muted);
+  }
+  .step.done .circle { background: var(--green); border-color: var(--green); color: #fff; }
+  .step.current .circle { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .step .label { font-size: 12px; color: var(--muted); }
+  .step.current .label { color: var(--text); font-weight: 600; }
+  .step.done .label { color: var(--text); }
+  .step-sep { width: 22px; height: 2px; background: var(--border); flex-shrink: 0; }
+  .step-sep.done { background: var(--green); }
+  .stepper .spacer { flex: 1; min-width: 16px; }
+
+  /* LAYOUT GRID */
+  .grid { display: grid; grid-template-columns: 1fr 330px; gap: 20px; align-items: start; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+  .card-head { display: flex; gap: 10px; align-items: center; }
+  .card-head .spacer { flex: 1; }
+  .card-head .hint { font-size: 11px; color: var(--muted); }
+  .col-stack { display: flex; flex-direction: column; gap: 20px; }
+
+  /* FIELDS */
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  .field label .req { color: var(--red); font-weight: 700; }
+  .field label .hint { font-size: 10px; color: var(--subtle); font-weight: 400; }
+  .input, select {
+    appearance: none; -webkit-appearance: none;
+    height: 40px; padding: 0 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13px; color: var(--text); font-family: inherit; width: 100%;
+  }
+  .input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+  .input::placeholder { color: var(--subtle); }
+  select { background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2364748b' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 10px; padding-right: 32px; }
+  textarea.input { height: auto; padding: 10px 12px; resize: vertical; min-height: 70px; }
+  .row { display: grid; gap: 16px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .row-2-1 { grid-template-columns: 2fr 1fr; }
+
+  /* RADIO TILES */
+  .radio-row { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+  .radio-tile {
+    display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border); cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 500;
+  }
+  .radio-tile .dot { width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid var(--border-strong); background: #fff; flex-shrink: 0; }
+  .radio-tile.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+  .radio-tile.selected .dot { background: var(--primary); border-color: var(--primary); box-shadow: inset 0 0 0 3px #fff; }
+
+  .check-row { display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); }
+  .check-row-3 { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+  .check-tile {
+    display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border); cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 500;
+  }
+  .check-tile .box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong); background: #fff; flex-shrink: 0; position: relative; }
+  .check-tile.selected { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+  .check-tile.selected .box { background: var(--primary); border-color: var(--primary); }
+  .check-tile.selected .box::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+  /* TABLE */
+  table.data-table { width: 100%; border-collapse: collapse; }
+  table.data-table thead th {
+    background: var(--bg); padding: 10px 14px; text-align: left; font-size: 11px;
+    color: var(--muted); font-weight: 600;
+  }
+  table.data-table thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.data-table thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.data-table tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; font-family: 'Inter', monospace; }
+  table.data-table tbody tr:last-child td { border-bottom: none; }
+  table.data-table tbody td.label-col { font-weight: 600; color: var(--muted); font-size: 12px; font-family: 'Inter', sans-serif; }
+  table.data-table tbody td.mono { font-family: 'Courier New', monospace; font-size: 12px; }
+  table.data-table .pill-xs { font-size: 10px; padding: 2px 7px; border-radius: 999px; font-weight: 600; display: inline-flex; }
+
+  /* NOTE / INFO BOX */
+  .note {
+    border-radius: 8px; padding: 12px 14px; display: flex; gap: 10px; align-items: center;
+  }
+  .note.amber { background: var(--amber-soft); }
+  .note.blue { background: var(--primary-soft); border: 1px solid #bfcfef; }
+  .note.muted { background: var(--bg); border: 1px dashed var(--border-strong); }
+  .note-ic {
+    width: 28px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .note.amber .note-ic { background: var(--amber); }
+  .note.blue .note-ic { background: var(--primary); }
+  .note.muted .note-ic { background: var(--border-strong); color: var(--muted); }
+  .note-text { flex: 1; }
+  .note-title { font-size: 12px; font-weight: 600; }
+  .note-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* AREA RESULT BOX */
+  .area-result {
+    background: var(--primary-soft); border: 1.5px solid var(--primary); border-radius: 8px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+  }
+  .area-result .label { font-size: 12px; font-weight: 600; color: var(--primary); }
+  .area-result .value { font-size: 22px; font-weight: 700; color: var(--primary); margin-left: auto; }
+  .area-result .unit { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+  /* DOC LIST */
+  .doc-row {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px;
+    background: var(--bg); border-radius: 8px; margin-bottom: 6px;
+  }
+  .doc-ic {
+    width: 28px; height: 28px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .doc-ic.ok { background: var(--green); }
+  .doc-ic.pending { background: var(--amber); }
+  .doc-ic.action { background: var(--primary); }
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-name { font-size: 12px; font-weight: 600; }
+  .doc-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* STATUS / VALIDATION LIST */
+  .status-list { display: flex; flex-direction: column; gap: 6px; }
+  .status-row {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    background: var(--bg); border-radius: 8px; font-size: 12px;
+  }
+  .status-row .name { flex: 1; font-weight: 500; }
+  .status-ic {
+    width: 20px; height: 20px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .status-ic.ok { background: var(--green); }
+  .status-ic.warn { background: var(--amber); }
+  .status-ic.err { background: var(--red); }
+  .status-detail { font-size: 11px; color: var(--muted); }
+
+  /* LOT MAP / POLYGON */
+  .lot-map {
+    width: 100%; height: 240px; background: #e8f2e8; border-radius: 8px;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
+  }
+  .lot-map .grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .lot-polygon {
+    position: absolute;
+    top: 28px; left: 36px; right: 36px; bottom: 28px;
+    clip-path: polygon(0% 100%, 8% 0%, 95% 4%, 100% 88%, 60% 100%);
+    background: rgba(14,73,161,0.18);
+    border: 2px solid var(--primary);
+  }
+  .lot-map .compass {
+    position: absolute; top: 10px; right: 12px;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; background: #fff; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--primary);
+  }
+  .lot-map .scale-bar {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .lot-map .scale-bar .bar {
+    width: 60px; height: 4px; background: var(--text); border-radius: 1px;
+    position: relative;
+  }
+  .lot-map .scale-bar .bar::before,
+  .lot-map .scale-bar .bar::after {
+    content: ""; position: absolute; width: 1px; height: 6px; background: var(--text); top: -1px;
+  }
+  .lot-map .scale-bar .bar::before { left: 0; }
+  .lot-map .scale-bar .bar::after { right: 0; }
+  .lot-map .scale-bar .scale-label { font-size: 9px; color: var(--muted); font-weight: 600; }
+  .lot-map .dim-label {
+    position: absolute; font-size: 9px; font-weight: 700; color: var(--primary-dark);
+    background: rgba(255,255,255,0.85); padding: 1px 4px; border-radius: 3px;
+  }
+  .lot-map .lote-tag {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 11px; font-weight: 700; color: var(--primary); background: rgba(255,255,255,0.9);
+    padding: 3px 8px; border-radius: 4px; border: 1px solid var(--primary);
+    white-space: nowrap;
+  }
+
+  /* CONFRONTANTES TABLE */
+  table.conf-table { width: 100%; border-collapse: collapse; }
+  table.conf-table thead th {
+    background: var(--bg); padding: 9px 12px; text-align: left; font-size: 11px;
+    color: var(--muted); font-weight: 600;
+  }
+  table.conf-table thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.conf-table thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.conf-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  table.conf-table tbody tr:last-child td { border-bottom: none; }
+  table.conf-table .dir-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    background: var(--primary-soft); color: var(--primary);
+  }
+  table.conf-table td.conf-name { font-weight: 500; }
+  table.conf-table td.cpf { font-size: 12px; color: var(--muted); font-family: 'Courier New', monospace; }
+
+  /* VINCULO CARD */
+  .vinculo-person {
+    display: flex; gap: 12px; align-items: center; padding: 12px;
+    background: var(--bg); border-radius: 8px;
+  }
+  .vinculo-avatar {
+    width: 38px; height: 38px; border-radius: 999px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .vinculo-name { font-size: 13px; font-weight: 600; }
+  .vinculo-id { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1180px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+    <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">SE</div>
+      <div>
+        <div class="brand-title">REURB Sergipe</div>
+        <div class="brand-sub">Programa Casa Legal · SEAD</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Visão Geral</div>
+      <a href="index.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Dashboard</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Operacional</div>
+      <a href="mobilizacao.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mobilização Social</span></div></a>
+      <a href="cadastro-social.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Social</span></div></a>
+      <a href="cadastro-tecnico.html" style="text-decoration:none"><div class="nav-item active"><span class="nav-label">Cadastro Técnico</span></div></a>
+      <a href="vinculo.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Vínculo Lote ↔ Família</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Processos</div>
+      <a href="workflow.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Workflow PRF → CRF</span></div></a>
+      <div class="nav-item"><span class="nav-label">Pós-Titulação</span></div>
+      <a href="mapa.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mapa Interativo</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Gestão</div>
+      <a href="indicadores.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Indicadores &amp; IMR</span></div></a>
+      <div class="nav-item"><span class="nav-label">Transparência</span></div>
+      <a href="auditoria.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Auditoria</span></div></a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main style="display:flex;flex-direction:column;overflow:hidden;">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Operacional</span>
+        <span class="sep">›</span>
+        <span class="current">Cadastro Técnico-Urbanístico</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Pesquisar lotes, núcleos…
+      </div>
+      <div class="icon-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="avatar">
+        <div class="avatar-dot"></div>
+        Ana M. · Agente
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div>
+          <div class="page-title-row">
+            <h1 class="page-title">Cadastro Técnico-Urbanístico</h1>
+            <span class="pill pill-primary">PostGIS</span>
+            <span class="pill pill-muted">SIRGAS 2000</span>
+            <span class="pill pill-muted">UTM Zona 24S</span>
+          </div>
+          <div class="page-sub">Núcleo Bom Jardim · Lote 14B / Quadra 7 · REURB-S</div>
+        </div>
+        <div class="spacer"></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Salvar Rascunho
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Validar Geometria
+          </button>
+        </div>
+      </div>
+
+      <!-- STEPPER -->
+      <div class="stepper">
+        <div class="step done">
+          <div class="circle">✓</div>
+          <div class="label">Identificação do Lote</div>
+        </div>
+        <div class="step-sep done"></div>
+        <div class="step done">
+          <div class="circle">✓</div>
+          <div class="label">Levantamento</div>
+        </div>
+        <div class="step-sep done"></div>
+        <div class="step current">
+          <div class="circle">3</div>
+          <div class="label">Geometria PostGIS</div>
+        </div>
+        <div class="step-sep"></div>
+        <div class="step">
+          <div class="circle">4</div>
+          <div class="label">Análise Urbanística</div>
+        </div>
+        <div class="step-sep"></div>
+        <div class="step">
+          <div class="circle">5</div>
+          <div class="label">Confrontantes</div>
+        </div>
+        <div class="step-sep"></div>
+        <div class="step">
+          <div class="circle">6</div>
+          <div class="label">Aprovação Técnica</div>
+        </div>
+        <div class="spacer"></div>
+        <span class="pill pill-amber">Em andamento</span>
+      </div>
+
+      <!-- MAIN GRID -->
+      <div class="grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-stack">
+
+          <!-- CARD: Identificação do Lote -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Identificação do Lote</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-green">Dados confirmados</span>
+            </div>
+
+            <div class="row row-4">
+              <div class="field">
+                <label>Núcleo Urbano Informal <span class="req">*</span></label>
+                <input class="input" type="text" value="Bom Jardim" />
+              </div>
+              <div class="field">
+                <label>Quadra <span class="req">*</span></label>
+                <input class="input" type="text" value="07" />
+              </div>
+              <div class="field">
+                <label>Lote <span class="req">*</span></label>
+                <input class="input" type="text" value="14B" />
+              </div>
+              <div class="field">
+                <label>Área (m²) <span class="req">*</span></label>
+                <input class="input" type="text" value="187,42" />
+              </div>
+            </div>
+
+            <div class="row row-3">
+              <div class="field">
+                <label>Testada Principal (m)</label>
+                <input class="input" type="text" value="12,35" />
+              </div>
+              <div class="field">
+                <label>Testada Lateral (m)</label>
+                <input class="input" type="text" value="15,20" />
+              </div>
+              <div class="field">
+                <label>Testada Fundo (m)</label>
+                <input class="input" type="text" value="12,80" />
+              </div>
+            </div>
+
+            <div class="row row-2">
+              <div class="field">
+                <label>Logradouro <span class="req">*</span></label>
+                <input class="input" type="text" value="Rua das Acácias" />
+              </div>
+              <div class="field">
+                <label>Número / Complemento</label>
+                <input class="input" type="text" value="s/nº · Fundos" />
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px;">Situação do Lote <span style="color:var(--red);font-weight:700;">*</span></div>
+              <div class="radio-row">
+                <div class="radio-tile selected">
+                  <div class="dot"></div>
+                  Ocupado
+                </div>
+                <div class="radio-tile">
+                  <div class="dot"></div>
+                  Desocupado
+                </div>
+                <div class="radio-tile">
+                  <div class="dot"></div>
+                  Misto
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Levantamento Topográfico -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Levantamento Topográfico</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-green">Concluído</span>
+            </div>
+
+            <div class="row row-4">
+              <div class="field">
+                <label>Data do Levantamento <span class="req">*</span></label>
+                <input class="input" type="date" value="2026-04-22" />
+              </div>
+              <div class="field">
+                <label>Responsável Técnico <span class="req">*</span></label>
+                <input class="input" type="text" value="Eng. Carlos Menezes" />
+              </div>
+              <div class="field">
+                <label>CREA Nº</label>
+                <input class="input" type="text" value="SE-18.742-D" />
+              </div>
+              <div class="field">
+                <label>ART Nº</label>
+                <input class="input" type="text" value="2026-SE-04821" />
+              </div>
+            </div>
+
+            <div class="row row-2">
+              <div class="field">
+                <label>Método de Levantamento <span class="req">*</span></label>
+                <select>
+                  <option selected>RTK-GNSS</option>
+                  <option>Estação Total</option>
+                  <option>Drone / VANT</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Escala</label>
+                <input class="input" type="text" value="1:500" />
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px;">Conferências de Campo</div>
+              <div class="check-row">
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Perímetro fechado
+                </div>
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Área conferida
+                </div>
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Confrontantes verificados
+                </div>
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Croqui assinado
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Geometria PostGIS -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Geometria PostGIS / Coordenadas UTM SIRGAS 2000</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-primary">Em validação</span>
+            </div>
+
+            <div class="note blue">
+              <div class="note-ic">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div class="note-text">
+                <div class="note-title">Sistema de Referência</div>
+                <div class="note-sub">Coordenadas em UTM Zona 24S · Datum SIRGAS 2000 (EPSG:31984) · Precisão posicional ≤ 0,10 m</div>
+              </div>
+            </div>
+
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ponto</th>
+                  <th>Norte (m)</th>
+                  <th>Leste (m)</th>
+                  <th>Elevação (m)</th>
+                  <th>Precisão</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="label-col">P1</td>
+                  <td class="mono">8.804.321,452</td>
+                  <td class="mono">720.148,831</td>
+                  <td class="mono">18,72</td>
+                  <td><span class="pill-xs" style="background:var(--green-soft);color:var(--green);">0,04 m</span></td>
+                </tr>
+                <tr>
+                  <td class="label-col">P2</td>
+                  <td class="mono">8.804.333,887</td>
+                  <td class="mono">720.148,972</td>
+                  <td class="mono">18,85</td>
+                  <td><span class="pill-xs" style="background:var(--green-soft);color:var(--green);">0,03 m</span></td>
+                </tr>
+                <tr>
+                  <td class="label-col">P3</td>
+                  <td class="mono">8.804.334,210</td>
+                  <td class="mono">720.161,053</td>
+                  <td class="mono">18,91</td>
+                  <td><span class="pill-xs" style="background:var(--green-soft);color:var(--green);">0,05 m</span></td>
+                </tr>
+                <tr>
+                  <td class="label-col">P4</td>
+                  <td class="mono">8.804.322,640</td>
+                  <td class="mono">720.161,318</td>
+                  <td class="mono">18,78</td>
+                  <td><span class="pill-xs" style="background:var(--green-soft);color:var(--green);">0,04 m</span></td>
+                </tr>
+                <tr>
+                  <td class="label-col">P5</td>
+                  <td class="mono">8.804.321,908</td>
+                  <td class="mono">720.154,890</td>
+                  <td class="mono">18,74</td>
+                  <td><span class="pill-xs" style="background:var(--amber-soft);color:var(--amber);">0,08 m</span></td>
+                </tr>
+                <tr>
+                  <td class="label-col">P6 → P1</td>
+                  <td class="mono">8.804.321,452</td>
+                  <td class="mono">720.148,831</td>
+                  <td class="mono">18,72</td>
+                  <td><span class="pill-xs" style="background:var(--green-soft);color:var(--green);">0,04 m</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="area-result">
+              <div>
+                <div class="label">Área Calculada pelo Sistema</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:3px;">PostGIS ST_Area · Polígono fechado · EPSG:31984</div>
+              </div>
+              <div class="value">187,42 <span class="unit">m²</span></div>
+            </div>
+
+            <div class="row row-2">
+              <div class="field">
+                <label>Perímetro Calculado</label>
+                <input class="input" type="text" value="55,47 m" readonly style="background:var(--bg);" />
+              </div>
+              <div class="field">
+                <label>Índice de Forma <span class="hint">(Polsby-Popper)</span></label>
+                <input class="input" type="text" value="0,764" readonly style="background:var(--bg);" />
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Análise Urbanística -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Análise Urbanística</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-amber">Pendente</span>
+            </div>
+
+            <div class="row row-3">
+              <div class="field">
+                <label>Zoneamento <span class="req">*</span></label>
+                <select>
+                  <option selected>ZR-2 · Zona Residencial 2</option>
+                  <option>ZR-1 · Zona Residencial 1</option>
+                  <option>ZEU · Zona de Urbanização Esp.</option>
+                  <option>ZEIS · Zona Esp. de Interesse Social</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Uso do Solo Atual <span class="req">*</span></label>
+                <select>
+                  <option selected>Residencial Unifamiliar</option>
+                  <option>Residencial Multifamiliar</option>
+                  <option>Misto (Resid. + Comércio)</option>
+                  <option>Vazio / Baldio</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Taxa de Ocupação (%)</label>
+                <input class="input" type="text" value="62,4" />
+              </div>
+            </div>
+
+            <div class="row row-3">
+              <div class="field">
+                <label>Coeficiente de Aproveitamento</label>
+                <input class="input" type="text" value="1,85" />
+              </div>
+              <div class="field">
+                <label>Recuo Frontal (m)</label>
+                <input class="input" type="text" value="3,00" />
+              </div>
+              <div class="field">
+                <label>Afastamento Lateral (m)</label>
+                <input class="input" type="text" value="1,50" />
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px;">Verificações Urbanísticas</div>
+              <div class="check-row-3">
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Dentro da ZEU
+                </div>
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Fora de APP
+                </div>
+                <div class="check-tile selected">
+                  <div class="box"></div>
+                  Sem Sobreposição
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Observações Técnicas</label>
+              <textarea class="input" rows="3" placeholder="Registre aqui observações pertinentes à análise urbanística deste lote…">Lote inserido em área consolidada de ocupação regular. Edificação principal em alvenaria com dois pavimentos. Ausência de esgotamento sanitário ligado à rede pública — pendência para pós-titulação.</textarea>
+            </div>
+          </div>
+
+          <!-- CARD: Confrontantes -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Confrontantes</h2>
+              <div class="spacer"></div>
+              <button class="btn btn-sm">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Adicionar
+              </button>
+            </div>
+
+            <table class="conf-table">
+              <thead>
+                <tr>
+                  <th>Direção</th>
+                  <th>Confrontante</th>
+                  <th>CPF / CNPJ</th>
+                  <th>Medida (m)</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="dir-badge">N</span></td>
+                  <td class="conf-name">José Ferreira dos Santos</td>
+                  <td class="cpf">***.482.***-94</td>
+                  <td>12,35</td>
+                  <td><span class="pill pill-green">Verificado</span></td>
+                </tr>
+                <tr>
+                  <td><span class="dir-badge">S</span></td>
+                  <td class="conf-name">Rua das Acácias (logradouro público)</td>
+                  <td class="cpf">—</td>
+                  <td>12,80</td>
+                  <td><span class="pill pill-green">Verificado</span></td>
+                </tr>
+                <tr>
+                  <td><span class="dir-badge">L</span></td>
+                  <td class="conf-name">Maria Helena Conceição</td>
+                  <td class="cpf">***.731.***-02</td>
+                  <td>15,20</td>
+                  <td><span class="pill pill-amber">Pendente assinatura</span></td>
+                </tr>
+                <tr>
+                  <td><span class="dir-badge">O</span></td>
+                  <td class="conf-name">Terreno Municipal — Prefeitura de Aracaju</td>
+                  <td class="cpf">13.105.928/0001-04</td>
+                  <td>15,12</td>
+                  <td><span class="pill pill-green">Verificado</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- end col-stack left -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-stack">
+
+          <!-- CARD: Visualização do Lote -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Visualização do Lote</h2>
+              <div class="spacer"></div>
+              <span style="font-size:11px;color:var(--muted);">Lote 14B · Q7</span>
+            </div>
+
+            <div class="lot-map">
+              <div class="grid-lines"></div>
+              <div class="lot-polygon"></div>
+              <div class="compass">N</div>
+              <!-- dimension labels -->
+              <div class="dim-label" style="top:14px;left:50%;transform:translateX(-50%);">12,35 m</div>
+              <div class="dim-label" style="bottom:14px;left:50%;transform:translateX(-50%);">12,80 m</div>
+              <div class="dim-label" style="top:50%;right:8px;transform:translateY(-50%);">15,20 m</div>
+              <div class="dim-label" style="top:50%;left:8px;transform:translateY(-50%);">15,12 m</div>
+              <div class="lote-tag">Lote 14B</div>
+              <div class="scale-bar">
+                <div class="bar"></div>
+                <div class="scale-label">0&nbsp;&nbsp;&nbsp;&nbsp;10 m</div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div style="background:var(--bg);border-radius:6px;padding:8px 10px;">
+                <div style="font-size:10px;color:var(--muted);font-weight:600;">ÁREA</div>
+                <div style="font-size:15px;font-weight:700;color:var(--primary);margin-top:2px;">187,42 m²</div>
+              </div>
+              <div style="background:var(--bg);border-radius:6px;padding:8px 10px;">
+                <div style="font-size:10px;color:var(--muted);font-weight:600;">PERÍMETRO</div>
+                <div style="font-size:15px;font-weight:700;color:var(--primary);margin-top:2px;">55,47 m</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Documentos Técnicos -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Documentos Técnicos</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-amber">1 pendente</span>
+            </div>
+
+            <div>
+              <div class="doc-row">
+                <div class="doc-ic ok">PDF</div>
+                <div class="doc-info">
+                  <div class="doc-name">Levantamento topográfico</div>
+                  <div class="doc-meta">PDF · 2,4 MB · 22/04/2026</div>
+                </div>
+                <span class="pill pill-green">OK</span>
+              </div>
+              <div class="doc-row">
+                <div class="doc-ic ok">PDF</div>
+                <div class="doc-info">
+                  <div class="doc-name">Memorial descritivo</div>
+                  <div class="doc-meta">PDF · 0,9 MB · 23/04/2026</div>
+                </div>
+                <span class="pill pill-green">OK</span>
+              </div>
+              <div class="doc-row">
+                <div class="doc-ic pending">PDF</div>
+                <div class="doc-info">
+                  <div class="doc-name">ART assinada</div>
+                  <div class="doc-meta">Aguardando upload do responsável</div>
+                </div>
+                <button class="btn btn-xs btn-outline-primary">Enviar</button>
+              </div>
+              <div class="doc-row">
+                <div class="doc-ic ok">JPG</div>
+                <div class="doc-info">
+                  <div class="doc-name">Croqui do lote</div>
+                  <div class="doc-meta">JPG · 1,1 MB · 22/04/2026</div>
+                </div>
+                <span class="pill pill-green">OK</span>
+              </div>
+              <div class="doc-row">
+                <div class="doc-ic pending">PDF</div>
+                <div class="doc-info">
+                  <div class="doc-name">Planta de situação</div>
+                  <div class="doc-meta">Pendente — escala 1:2000</div>
+                </div>
+                <button class="btn btn-xs btn-outline-primary">Enviar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Validações Automáticas -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Validações Automáticas</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-amber">1 aviso</span>
+            </div>
+
+            <div class="status-list">
+              <div class="status-row">
+                <div class="status-ic ok">✓</div>
+                <div class="name">Geometria fechada</div>
+                <div class="status-detail">Polígono válido</div>
+              </div>
+              <div class="status-row">
+                <div class="status-ic ok">✓</div>
+                <div class="name">Sobreposição com outros lotes</div>
+                <div class="status-detail">Nenhuma</div>
+              </div>
+              <div class="status-row">
+                <div class="status-ic ok">✓</div>
+                <div class="name">APP / APM</div>
+                <div class="status-detail">Fora de área protegida</div>
+              </div>
+              <div class="status-row" style="background:var(--amber-soft);">
+                <div class="status-ic warn">!</div>
+                <div class="name" style="color:var(--amber);">Área vs. cadastro</div>
+                <div class="status-detail" style="color:var(--amber);">Divergência 2,1 m²</div>
+              </div>
+              <div class="status-row">
+                <div class="status-ic ok">✓</div>
+                <div class="name">Coordenadas válidas</div>
+                <div class="status-detail">EPSG:31984 ✓</div>
+              </div>
+            </div>
+
+            <div class="note amber">
+              <div class="note-ic">!</div>
+              <div class="note-text">
+                <div class="note-title">Divergência de área</div>
+                <div class="note-sub">A área levantada (187,42 m²) difere 2,1 m² do cadastro municipal. Verifique com o cartório antes da emissão do CRF.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: Vinculação -->
+          <div class="card">
+            <div class="card-head">
+              <h2 class="card-title">Vinculação</h2>
+              <div class="spacer"></div>
+              <span class="pill pill-green">Vinculado</span>
+            </div>
+
+            <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;">FAMÍLIA VINCULADA</div>
+            <div class="vinculo-person">
+              <div class="vinculo-avatar">SM</div>
+              <div>
+                <div class="vinculo-name">Silva, Maria Aparecida</div>
+                <div class="vinculo-id">Ficha #SE-2026-00482 · Cadastro Social</div>
+              </div>
+            </div>
+
+            <a href="cadastro-social.html" class="btn btn-outline-primary" style="text-align:center;justify-content:center;text-decoration:none;">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Ver Cadastro Social
+            </a>
+          </div>
+
+        </div><!-- end col-stack right -->
+
+      </div><!-- end .grid -->
+
+    </div><!-- end .content -->
+  </main>
+</div>
+</body>
+</html>

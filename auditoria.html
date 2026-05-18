@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>REURB Sergipe — Auditoria &amp; Rastreabilidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --subtle: #94a3b8;
+    --primary: #0e49a1;
+    --primary-dark: #093279;
+    --primary-soft: #edf2fd;
+    --green: #059669;
+    --green-soft: #e0f6ed;
+    --amber: #d98510;
+    --amber-soft: #fef2d5;
+    --red: #dc2626;
+    --red-soft: #fde8e8;
+    --purple: #7c3aed;
+    --purple-soft: #f1eefd;
+    --sidebar: #0f172a;
+    --sidebar-item: #26334a;
+    --sidebar-text: #bbc4d4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--sidebar); color: #fff; padding: 24px 16px; }
+  .brand { display: flex; gap: 10px; align-items: center; padding-bottom: 24px; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+  .brand-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-text); }
+  .nav-section { margin-top: 16px; padding-left: 8px; }
+  .nav-section-title { font-size: 10px; font-weight: 600; color: var(--subtle);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+  .nav-item {
+    display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 8px;
+    color: var(--sidebar-text); cursor: pointer; user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); }
+  .nav-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+  .nav-label { font-size: 13px; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; gap: 16px; align-items: center;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .breadcrumb { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
+  .breadcrumb .sep { color: var(--subtle); }
+  .breadcrumb .current { color: var(--text); font-weight: 600; }
+  .topbar .spacer { flex: 1; }
+  .search {
+    width: 340px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0 12px; display: flex; gap: 8px; align-items: center;
+    color: var(--subtle); font-size: 12px;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer; font-size: 16px;
+  }
+  .avatar {
+    height: 38px; padding: 0 12px 0 6px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 999px; display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 500;
+  }
+  .avatar-dot { width: 26px; height: 26px; border-radius: 999px; background: var(--primary); }
+
+  /* CONTENT */
+  .content { padding: 24px 32px 48px 32px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* HEADER */
+  .page-title { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+  .page-sub { color: var(--muted); font-size: 13px; margin: 0; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; gap: 8px; align-items: center; padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    background: var(--surface); color: var(--text); border-color: var(--border);
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+  .card-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .card-head .spacer { flex: 1; }
+
+  /* FILTER ROW */
+  .filter-row {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .filter-select {
+    appearance: none; -webkit-appearance: none;
+    height: 38px; padding: 0 32px 0 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 12px; color: var(--text); font-family: inherit;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%2364748b' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; background-size: 10px;
+    cursor: pointer;
+  }
+  .date-input {
+    height: 38px; padding: 0 10px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 12px; color: var(--text); font-family: inherit; width: 130px;
+  }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table.audit-log { width: 100%; border-collapse: collapse; min-width: 700px; }
+  table.audit-log thead th {
+    background: var(--bg); padding: 10px 14px; text-align: left; font-size: 11px;
+    color: var(--muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  table.audit-log thead tr th:first-child { border-radius: 8px 0 0 8px; }
+  table.audit-log thead tr th:last-child { border-radius: 0 8px 8px 0; }
+  table.audit-log tbody td {
+    padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 12.5px; vertical-align: middle;
+  }
+  table.audit-log tbody tr:last-child td { border-bottom: none; }
+  .ts { font-family: 'Courier New', monospace; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .mod {
+    display: inline-flex; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;
+    background: var(--bg); color: var(--muted); border: 1px solid var(--border); white-space: nowrap;
+  }
+  .mod-auth    { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-soft); }
+  .mod-social  { background: var(--green-soft);  color: var(--green);  border-color: var(--green-soft); }
+  .mod-tecnico { background: var(--primary-soft); color: var(--primary); border-color: var(--primary-soft); }
+  .mod-workflow{ background: var(--amber-soft);  color: var(--amber);  border-color: var(--amber-soft); }
+  .mod-vinculo { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+  .mod-export  { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-soft); }
+
+  /* NOTE BOX */
+  .note-box {
+    background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 10px;
+    padding: 16px 18px; font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">SE</div>
+      <div>
+        <div class="brand-title">REURB Sergipe</div>
+        <div class="brand-sub">Programa Casa Legal · SEAD</div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Visão Geral</div>
+      <a href="index.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Dashboard</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Operacional</div>
+      <a href="mobilizacao.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mobilização Social</span></div></a>
+      <a href="cadastro-social.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Social</span></div></a>
+      <a href="cadastro-tecnico.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Cadastro Técnico</span></div></a>
+      <a href="vinculo.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Vínculo Lote ↔ Família</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Processos</div>
+      <a href="workflow.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Workflow PRF → CRF</span></div></a>
+      <div class="nav-item"><span class="nav-label">Pós-Titulação</span></div>
+      <a href="mapa.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Mapa Interativo</span></div></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Gestão</div>
+      <a href="indicadores.html" style="text-decoration:none"><div class="nav-item"><span class="nav-label">Indicadores &amp; IMR</span></div></a>
+      <div class="nav-item"><span class="nav-label">Transparência</span></div>
+      <a href="auditoria.html" style="text-decoration:none"><div class="nav-item active"><span class="nav-label">Auditoria</span></div></a>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="breadcrumb">
+        <span>Gestão</span>
+        <span class="sep">›</span>
+        <span class="current">Auditoria</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+        Pesquisar…
+      </div>
+      <div class="icon-btn">🔔</div>
+      <div class="avatar">
+        <div class="avatar-dot"></div>
+        Ana M. · Agente
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <div>
+        <h1 class="page-title">Auditoria &amp; Rastreabilidade</h1>
+        <p class="page-sub">Registro de ações realizadas no sistema</p>
+      </div>
+
+      <!-- CARD 1: LOG DE ATIVIDADES -->
+      <div class="card">
+        <div class="card-head">
+          <h2 class="card-title">Log de Atividades</h2>
+          <div class="spacer"></div>
+          <div class="filter-row">
+            <select class="filter-select">
+              <option>Módulo: Todos</option>
+              <option>Autenticação</option>
+              <option>Cadastro Social</option>
+              <option>Cadastro Técnico</option>
+              <option>Vínculo</option>
+              <option>Workflow</option>
+              <option>Exportação</option>
+            </select>
+            <input type="date" class="date-input" value="2026-05-18" />
+            <button class="btn btn-sm btn-primary">Exportar</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="audit-log">
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Usuário</th>
+                <th>Ação</th>
+                <th>Registro</th>
+                <th>Módulo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="ts">18/05/2026 14:52</span></td>
+                <td>Ana M.</td>
+                <td>Login no sistema</td>
+                <td style="color:var(--muted);">—</td>
+                <td><span class="mod mod-auth">Autenticação</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:49</span></td>
+                <td>Renata S.</td>
+                <td>Cadastro social criado</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">CS-2026-01847</td>
+                <td><span class="mod mod-social">Cadastro Social</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:47</span></td>
+                <td>João L.</td>
+                <td>Campo editado — área do lote</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">CT-2026-00934</td>
+                <td><span class="mod mod-tecnico">Cadastro Técnico</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:45</span></td>
+                <td>João L.</td>
+                <td>Documento anexado — planta baixa</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">CT-2026-00934</td>
+                <td><span class="mod mod-tecnico">Cadastro Técnico</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:41</span></td>
+                <td>Carlos F.</td>
+                <td>Vínculo lote-família aprovado</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">VL-2026-00391</td>
+                <td><span class="mod mod-vinculo">Vínculo</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:38</span></td>
+                <td>Carlos F.</td>
+                <td>Processo avançado para análise jurídica</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">SE-2026-00482</td>
+                <td><span class="mod mod-workflow">Workflow</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:35</span></td>
+                <td>Ana M.</td>
+                <td>Relatório exportado</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">RPT-20260518-02</td>
+                <td><span class="mod mod-export">Exportação</span></td>
+              </tr>
+              <tr>
+                <td><span class="ts">18/05/2026 14:22</span></td>
+                <td>Renata S.</td>
+                <td>Cadastro social criado</td>
+                <td style="color:var(--muted); font-family:monospace; font-size:11.5px;">CS-2026-01851</td>
+                <td><span class="mod mod-social">Cadastro Social</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CARD 2: NOTE BOX -->
+      <div class="note-box">
+        O módulo de auditoria registrará automaticamente todas as ações realizadas no sistema.
+        A configuração de retenção, alertas e relatórios de conformidade será definida na fase de implantação.
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+</div><!-- /app -->
+</body>
+</html>
